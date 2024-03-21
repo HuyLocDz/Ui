@@ -649,7 +649,7 @@ function OrionLib:MakeWindow(WindowConfig)
 		MainWindow.Visible = false
 		UIHidden = true
 		OrionLib:MakeNotification({
-			Name = "Interface Hidden",
+			Name = "Tinh Linh Hub",
 			Content = "Tap Right-Shift To Reopen The Interface",
 			Time = 5
 		})
@@ -1374,11 +1374,11 @@ function OrionLib:MakeWindow(WindowConfig)
 				})
 
 				local TextboxActual = AddThemeObject(Create("TextBox", {
-					Size = UDim2.new(1, 0, 1, 0),
-					BackgroundTranspareancy = 1,
+					Size = UDim2.new(2, 0, 2, 0),
+					BackgroundTransparency = 1,
 					TextColor3 = Color3.fromRGB(255, 255, 255),
 					PlaceholderColor3 = Color3.fromRGB(210,210,210),
-					PlaceholderText = "Enter Here",
+					PlaceholderText = "Input",
 					Font = Enum.Font.GothamSemibold,
 					TextXAlignment = Enum.TextXAlignment.Center,
 					TextSize = 14,
