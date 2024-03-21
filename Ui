@@ -1375,7 +1375,7 @@ function OrionLib:MakeWindow(WindowConfig)
 
 				local TextboxActual = AddThemeObject(Create("TextBox", {
 					Size = UDim2.new(2, 0, 2, 0),
-					BackgroundTransparency = 1,
+					BackgroundTransparency = 2,
 					TextColor3 = Color3.fromRGB(255, 255, 255),
 					PlaceholderColor3 = Color3.fromRGB(210,210,210),
 					PlaceholderText = "Enter Here",
