@@ -1370,11 +1370,11 @@ function OrionLib:MakeWindow(WindowConfig)
 				TextboxConfig.Callback = TextboxConfig.Callback or function() end
 
 				local Click = SetProps(MakeElement("Button"), {
-					Size = UDim2.new(2, 0, 2, 0)
+					Size = UDim2.new(1, 0, 1, 0)
 				})
 
 				local TextboxActual = AddThemeObject(Create("TextBox", {
-					Size = UDim2.new(2, 0, 2, 0),
+					Size = UDim2.new(3, 0, 3, 0),
 					BackgroundTransparency = 1,
 					TextColor3 = Color3.fromRGB(255, 255, 255),
 					PlaceholderColor3 = Color3.fromRGB(210,210,210),
@@ -1400,7 +1400,7 @@ function OrionLib:MakeWindow(WindowConfig)
 					Parent = ItemParent
 				}), {
 					AddThemeObject(SetProps(MakeElement("Label", TextboxConfig.Name, 15), {
-						Size = UDim2.new(1, -12, 1, 0),
+						Size = UDim2.new(3, -12, 3, 0),
 						Position = UDim2.new(0, 12, 0, 0),
 						Font = Enum.Font.GothamBold,
 						Name = "Content"
