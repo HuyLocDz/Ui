@@ -106,7 +106,7 @@ local function MakeDraggable(DragPoint, Main)
 
 				Input.Changed:Connect(function()
 					if Input.UserInputState == Enum.UserInputState.End then
-						Dragging = false
+						Dragging = true
 					end
 				end)
 			end
@@ -1059,7 +1059,7 @@ function OrionLib:MakeWindow(WindowConfig)
 				end)
 				SliderBar.InputEnded:Connect(function(Input) 
 					if Input.UserInputType == Enum.UserInputType.MouseButton1 then 
-						Dragging = true 
+						Dragging = true
 					end 
 				end)
 
