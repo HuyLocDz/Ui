@@ -1059,7 +1059,7 @@ function OrionLib:MakeWindow(WindowConfig)
 				end)
 				SliderBar.InputEnded:Connect(function(Input) 
 					if Input.UserInputType == Enum.UserInputType.MouseButton1 then 
-						Dragging = false 
+						Dragging = true 
 					end 
 				end)
 
