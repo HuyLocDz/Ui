@@ -1363,15 +1363,15 @@ function OrionLib:MakeWindow(WindowConfig)
 				TextboxConfig.Callback = TextboxConfig.Callback or function() end
 
 				local Click = SetProps(MakeElement("Button"), {
-					Size = UDim2.new(6, 0, 1, 0)
+					Size = UDim2.new(1, 0, 1, 0)
 				})
 
 				local TextboxActual = AddThemeObject(Create("TextBox", {
-					Size = UDim2.new(6, 0, 1, 0),
+					Size = UDim2.new(1, 0, 1, 0),
 					BackgroundTransparency = 1,
 					TextColor3 = Color3.fromRGB(255, 255, 255),
 					PlaceholderColor3 = Color3.fromRGB(210,210,210),
-					PlaceholderText = "Nhap Vo",
+					PlaceholderText = "Input",
 					Font = Enum.Font.GothamSemibold,
 					TextXAlignment = Enum.TextXAlignment.Center,
 					TextSize = 14,
