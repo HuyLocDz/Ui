@@ -423,7 +423,7 @@ function OrionLib:MakeNotification(NotificationConfig)
 				Size = UDim2.new(1, 0, 0, 0),
 				Position = UDim2.new(0, 0, 0, 25),
 				Font = Enum.Font.GothamSemibold,
-				Name = "N \ A",
+				Name = "Content",
 				AutomaticSize = Enum.AutomaticSize.Y,
 				TextColor3 = Color3.fromRGB(200, 200, 200),
 				TextWrapped = true
@@ -1367,11 +1367,11 @@ function OrionLib:MakeWindow(WindowConfig)
 				})
 
 				local TextboxActual = AddThemeObject(Create("TextBox", {
-					Size = UDim2.new(5, 0, 1, 0),
+					Size = UDim2.new(6, 0, 1, 0),
 					BackgroundTransparency = 1,
 					TextColor3 = Color3.fromRGB(255, 255, 255),
 					PlaceholderColor3 = Color3.fromRGB(210,210,210),
-					PlaceholderText = "",
+					PlaceholderText = "Nhap Vo",
 					Font = Enum.Font.GothamSemibold,
 					TextXAlignment = Enum.TextXAlignment.Center,
 					TextSize = 14,
@@ -1381,7 +1381,7 @@ function OrionLib:MakeWindow(WindowConfig)
 				local TextContainer = AddThemeObject(SetChildren(SetProps(MakeElement("RoundFrame", Color3.fromRGB(255, 255, 255), 0, 4), {
 					Size = UDim2.new(0, 24, 0, 24),
 					Position = UDim2.new(1, -12, 0.5, 0),
-					AnchorPoint = Vector2.new(5, 2.5)
+					AnchorPoint = Vector2.new(1, 0.5)
 				}), {
 					AddThemeObject(MakeElement("Stroke"), "Stroke"),
 					TextboxActual
@@ -1519,7 +1519,7 @@ function OrionLib:MakeWindow(WindowConfig)
 							Size = UDim2.new(1, -12, 1, 0),
 							Position = UDim2.new(0, 12, 0, 0),
 							Font = Enum.Font.GothamBold,
-							Name = "N / A"
+							Name = "Content"
 						}), "Text"),
 						ColorpickerBox,
 						Click,
@@ -1700,7 +1700,7 @@ function OrionLib:MakeWindow(WindowConfig)
 			})
 		end
 		return ElementFunction   
-	end
+	end  
 	return TabFunction
 end   
 
