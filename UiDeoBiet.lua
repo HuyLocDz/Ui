@@ -101,7 +101,7 @@ function CFAHub:DraggingEnabled(frame, parent)
     local dragInput, mousePos, framePos
 
     frame.InputBegan:Connect(function(input)
-        if Input.UserInputType == Enum.UserInputType.MouseMovement or Input.UserInputType == Enum.UserInputType.Touch then
+        if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
             dragging = true
             mousePos = input.Position
             framePos = parent.Position
@@ -115,7 +115,7 @@ function CFAHub:DraggingEnabled(frame, parent)
     end)
 
     frame.InputChanged:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseMovement then
+        if Input.UserInputType == Enum.UserInputType.MouseMovement or Input.UserInputType == Enum.UserInputType.Touch then
             dragInput = input
         end
     end)
@@ -1510,14 +1510,14 @@ function CFAHub:CreateWindow(title, gameName, intro)
 				end
 
                 SliderDrag.InputBegan:Connect(function(input)
-					if Input.UserInputType == Enum.UserInputType.MouseMovement or Input.UserInputType == Enum.UserInputType.Touch then
+					if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
 						dragging = true
                         Utility:TweenObject(SilderNumber, {TextTransparency = 0}, 0.5)
 					end
 				end)
 
 				SliderDrag.InputEnded:Connect(function(input)
-					if Input.UserInputType == Enum.UserInputType.MouseMovement or Input.UserInputType == Enum.UserInputType.Touch then
+					if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
 					    dragging = false
                         Utility:TweenObject(SilderNumber, {TextTransparency = 1}, 0.5)
 					end
@@ -2200,7 +2200,7 @@ function CFAHub:CreateWindow(title, gameName, intro)
 
                 ColorFrame.InputBegan:Connect(
                     function(input)
-                        if Input.UserInputType == Enum.UserInputType.MouseMovement or Input.UserInputType == Enum.UserInputType.Touch then
+                        if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
                             if ColorInput then
                                 ColorInput:Disconnect()
                             end
@@ -2225,7 +2225,7 @@ function CFAHub:CreateWindow(title, gameName, intro)
                     end)
                 ColorFrame.InputEnded:Connect(
                     function(input)
-                        if Input.UserInputType == Enum.UserInputType.MouseMovement or Input.UserInputType == Enum.UserInputType.Touch then
+                        if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
                             if ColorInput then
                                 ColorInput:Disconnect()
                             end
@@ -2234,7 +2234,7 @@ function CFAHub:CreateWindow(title, gameName, intro)
 
                 Hue.InputBegan:Connect(
                     function(input)
-                        if Input.UserInputType == Enum.UserInputType.MouseMovement or Input.UserInputType == Enum.UserInputType.Touch then
+                        if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
                             if HueInput then
                                 HueInput:Disconnect()
                             end
@@ -2255,7 +2255,7 @@ function CFAHub:CreateWindow(title, gameName, intro)
 
                 Hue.InputEnded:Connect(
                     function(input)
-                        if Input.UserInputType == Enum.UserInputType.MouseMovement or Input.UserInputType == Enum.UserInputType.Touch then
+                        if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
                             if HueInput then
                                 HueInput:Disconnect()
                             end
