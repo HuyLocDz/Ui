@@ -1524,7 +1524,7 @@ function CFAHub:CreateWindow(title, gameName, intro)
 				end)
 
                 Input.InputChanged:Connect(function(input)
-                    if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+                    if dragging then
 						move(input)
 					end
                 end)
