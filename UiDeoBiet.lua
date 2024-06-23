@@ -88,8 +88,6 @@ local RayfieldLibrary = {
 	}
 }
 
-
-
 -- Services
 
 local UserInputService = game:GetService("UserInputService")
@@ -98,39 +96,42 @@ local HttpService = game:GetService("HttpService")
 local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
 local CoreGui = game:GetService("CoreGui")
+local LocalPlayer = game:GetService('Players').LocalPlayer
 
 -- Interface Management
-local Rayfield = game:GetObjects("rbxassetid://10804731440")[1]
-
+local Rayfield = game:GetObjects("rbxassetid://13853811008")[1]
 Rayfield.Enabled = false
+local spawn = task.spawn
+local delay = task.delay
 
+--Studio
 
-if gethui then
-	Rayfield.Parent = gethui()
-elseif syn.protect_gui then 
-	syn.protect_gui(Rayfield)
-	Rayfield.Parent = CoreGui
-elseif CoreGui:FindFirstChild("RobloxGui") then
-	Rayfield.Parent = CoreGui:FindFirstChild("RobloxGui")
-else
-	Rayfield.Parent = CoreGui
+if game["Run Service"]:IsStudio() then
+	function gethui() return Rayfield end local http_request = nil local syn = {protect_gui = false,request = false,}local http = nil function writefile(tt,t,ttt)end function isfolder(t)end function makefolder(t)end function isfile(r)end function readfile(t)end
 end
 
-if gethui then
-	for _, Interface in ipairs(gethui():GetChildren()) do
-		if Interface.Name == Rayfield.Name and Interface ~= Rayfield then
-			Interface.Enabled = false
-			Interface.Name = "Rayfield-Old"
+pcall(function()
+	_G.LastRayField.Name = 'Old Rayfield'
+	_G.LastRayField.Enabled = false
+end)
+local ParentObject = function(Gui)
+	local success, failure = pcall(function()
+		if get_hidden_gui or gethui then
+			local hiddenUI = get_hidden_gui or gethui
+			Gui.Parent = hiddenUI()
+		elseif (not is_sirhurt_closure) and (syn and syn.protect_gui) then
+			syn.protect_gui(Gui)
+			Gui.Parent = CoreGui
+		elseif CoreGui then
+			Gui.Parent = CoreGui
 		end
+	end)
+	if not success and failure then
+		Gui.Parent = LocalPlayer:FindFirstChildWhichIsA("PlayerGui")
 	end
-else
-	for _, Interface in ipairs(CoreGui:GetChildren()) do
-		if Interface.Name == Rayfield.Name and Interface ~= Rayfield then
-			Interface.Enabled = false
-			Interface.Name = "Rayfield-Old"
-		end
-	end
+	_G.LastRayField = Rayfield
 end
+ParentObject(Rayfield)
 
 -- Object Variables
 
@@ -139,26 +140,39 @@ local Main = Rayfield.Main
 local Topbar = Main.Topbar
 local Elements = Main.Elements
 local LoadingFrame = Main.LoadingFrame
-local TabList = Main.TabList
+local TopList = Main.TabList
+local SideList = Main.SideTabList.Holder
+local TabsList = TopList and SideList
+local SearchBar = Main.Searchbar
+local Filler = SearchBar.CanvasGroup.Filler
+local Prompt = Main.Prompt
+local NotePrompt = Main.NotePrompt
+local InfoPrompt = Rayfield.Info
 
 Rayfield.DisplayOrder = 100
+Elements.UIPageLayout.TouchInputEnabled = false
 LoadingFrame.Version.Text = Release
-
 
 -- Variables
 
-local request = (syn and syn.request) or (http and http.request) or http_request
+local request = request or (syn and syn.request) or (http and http.request) or http_request
 local CFileName = nil
 local CEnabled = false
 local Minimised = false
 local Hidden = false
 local Debounce = false
+local clicked = false
+local SearchHided = true
+local SideBarClosed = true
+local InfoPromptOpen = false
+local BarType = 'Side'
+local HoverTime = 0.3
 local Notifications = Rayfield.Notifications
 
 local SelectedTheme = RayfieldLibrary.Theme.Default
 
 function ChangeTheme(ThemeName)
-	SelectedTheme = RayfieldLibrary.Theme[ThemeName]
+	SelectedTheme = Rayfield.Theme[ThemeName]
 	for _, obj in ipairs(Rayfield:GetDescendants()) do
 		if obj.ClassName == "TextLabel" or obj.ClassName == "TextBox" or obj.ClassName == "TextButton" then
 			if SelectedTheme.TextFont ~= "Default" then 
@@ -179,7 +193,7 @@ function ChangeTheme(ThemeName)
 
 	for _, TabPage in ipairs(Elements:GetChildren()) do
 		for _, Element in ipairs(TabPage:GetChildren()) do
-			if Element.ClassName == "Frame" and Element.Name ~= "Placeholder" and Element.Name ~= "SectionSpacing" and Element.Name ~= "SectionTitle"  then
+			if Element.ClassName == "Frame" and Element.Name ~= "Placeholder" and Element.Name ~= "SectionSpacing" and Element.Name ~= ""  then
 				Element.BackgroundColor3 = SelectedTheme.ElementBackground
 				Element.UIStroke.Color = SelectedTheme.ElementStroke
 			end
@@ -187,12 +201,21 @@ function ChangeTheme(ThemeName)
 	end
 
 end
-
 local function AddDraggingFunctionality(DragPoint, Main)
 	pcall(function()
-		local Dragging, DragInput, MousePos, FramePos = false
+		local Dragging, DragInput, MousePos, FramePos, Conduct = false,false,false,false,false
+		UserInputService.InputBegan:Connect(function(Input)
+			if (Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch) then
+				Conduct = true
+				Input.Changed:Connect(function()
+					if Input.UserInputState == Enum.UserInputState.End then
+						Conduct = false
+					end
+				end)
+			end
+		end)
 		DragPoint.InputBegan:Connect(function(Input)
-			if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+			if (Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch) and not Conduct then
 				Dragging = true
 				MousePos = Input.Position
 				FramePos = Main.Position
@@ -205,7 +228,7 @@ local function AddDraggingFunctionality(DragPoint, Main)
 			end
 		end)
 		DragPoint.InputChanged:Connect(function(Input)
-			if Input.UserInputType == Enum.UserInputType.MouseMovement then
+			if (Input.UserInputType == Enum.UserInputType.MouseMovement or Input.UserInputType == Enum.UserInputType.Touch) then
 				DragInput = Input
 			end
 		end)
@@ -213,11 +236,86 @@ local function AddDraggingFunctionality(DragPoint, Main)
 			if Input == DragInput and Dragging then
 				local Delta = Input.Position - MousePos
 				TweenService:Create(Main, TweenInfo.new(0.45, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Position  = UDim2.new(FramePos.X.Scale,FramePos.X.Offset + Delta.X, FramePos.Y.Scale, FramePos.Y.Offset + Delta.Y)}):Play()
+				TweenService:Create(InfoPrompt, TweenInfo.new(0.6, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Position  = UDim2.new(FramePos.X.Scale,FramePos.X.Offset + Delta.X+ 370, FramePos.Y.Scale, FramePos.Y.Offset + Delta.Y)}):Play()
 			end
 		end)
 	end)
-end   
+end
 
+function BoolToText(Bool)
+	if Bool == true then
+		return 'ENABLED',Color3.fromRGB(44, 186, 44)
+	else
+		return 'DISABLED',Color3.fromRGB(186, 44, 44)
+	end
+end
+
+local function FadeDescription(Infos,type,Out)
+	local Size = UDim2.fromOffset(230,275)
+	local Transparency = 0
+	local WaitTime = .05
+	if Out then
+		Size = UDim2.fromOffset(212,254)
+		Transparency = 1
+		WaitTime = nil
+	end
+	if not Out then
+		-- Set the Status
+		if type == 'slider' then
+			InfoPrompt.Status.Text = Infos.CurrentValue
+		elseif type == 'button' then
+			InfoPrompt.Status.Text = 'Clickable'
+		elseif type == 'toggle' then
+			InfoPrompt.Status.Text,InfoPrompt.Status.TextColor3 = BoolToText(Infos.CurrentValue)
+		elseif type == 'dropdown' then
+		elseif type == 'colorpicker' then
+			InfoPrompt.Status.Text = Infos.Color.R..Infos.Color.G..Infos.Color.B
+		end
+
+		if Infos and Infos["Info"] and not Infos.Info["Image"] then
+			InfoPrompt.ImageLabel.Visible = false
+			InfoPrompt.Description.Position = InfoPrompt.ImageLabel.Position
+		elseif Infos and Infos["Info"] and Infos.Info["Image"] then
+			InfoPrompt.ImageLabel.Visible = true
+			InfoPrompt.ImageLabel.Image = 'rbxassetid://'..Infos.Info["Image"]
+			InfoPrompt.Description.Position = UDim2.new(.5,0,0,160)
+		end
+
+		if Infos and Infos["Info"] then
+			InfoPrompt.Title.Text = Infos.Info.Title
+			InfoPrompt.Description.Text = Infos.Info.Description
+		end
+	end
+	TweenService:Create(InfoPrompt,TweenInfo.new(.3,Enum.EasingStyle.Quint,Enum.EasingDirection.Out),{
+		Size = Size,BackgroundTransparency = Transparency
+	}):Play()
+	TweenService:Create(InfoPrompt.ImageLabel,TweenInfo.new(.25,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),{
+		ImageTransparency = Transparency
+	}):Play()
+	TweenService:Create(InfoPrompt.Description,TweenInfo.new(.25,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),{
+		TextTransparency = Transparency
+	}):Play()
+	TweenService:Create(InfoPrompt.Status,TweenInfo.new(.25,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),{
+		TextTransparency = Transparency
+	}):Play()
+	TweenService:Create(InfoPrompt.Title,TweenInfo.new(.25,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),{
+		TextTransparency = Transparency
+	}):Play()
+end
+
+function AddInfos(Object,Settings,type)
+	--local Interact = Object:FindFirstChild('Interact') or Object:FindFirstChild('Main'):FindFirstChild('Interact')
+	Object.MouseEnter:Connect(function(input)
+		--if not (input.UserInputType == Enum.UserInputType.MouseButton2) then return end
+		if Settings and Settings.Info then
+			InfoPromptOpen = true
+			FadeDescription(Settings,type)
+		end
+	end)
+	Object.MouseLeave:Connect(function()
+		FadeDescription(nil,nil,true)
+	end)
+end
 local function PackColor(Color)
 	return {R = Color.R * 255, G = Color.G * 255, B = Color.B * 255}
 end    
@@ -280,11 +378,9 @@ local neon = (function() -- Open sourced neon module
 		end
 	end
 
-
 	local binds = {}
 	local root = Instance.new('Folder', RootParent)
 	root.Name = 'neon'
-
 
 	local GenUid; do
 		local id = 0
@@ -472,7 +568,6 @@ local neon = (function() -- Open sourced neon module
 		return binds[frame] and binds[frame].parts
 	end
 
-
 	return module
 
 end)()
@@ -552,8 +647,6 @@ function RayfieldLibrary:Notify(NotificationSettings)
 		TweenService:Create(Notification.Title, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {TextTransparency = 0}):Play()
 		TweenService:Create(Notification.Description, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {TextTransparency = 0.2}):Play()
 		wait(0.2)
-
-
 
 		-- Requires Graphics Level 8-10
 		if getgenv().SecureMode == nil then
@@ -743,7 +836,6 @@ function Maximise()
 	Debounce = true
 	Topbar.ChangeSize.Image = "rbxassetid://"..10137941941
 
-
 	TweenService:Create(Topbar.UIStroke, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {Transparency = 1}):Play()
 	TweenService:Create(Main.Shadow.Image, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {ImageTransparency = 0.4}):Play()
 	TweenService:Create(Topbar.CornerRepair, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {BackgroundTransparency = 0}):Play()
@@ -778,7 +870,6 @@ function Maximise()
 		end
 	end
 
-
 	wait(0.1)
 
 	for _, tabbtn in ipairs(TabList:GetChildren()) do
@@ -799,7 +890,6 @@ function Maximise()
 
 		end
 	end
-
 
 	wait(0.5)
 	Debounce = false
@@ -876,7 +966,6 @@ function RayfieldLibrary:CreateWindow(Settings)
 	Topbar.Visible = false
 	Elements.Visible = false
 	LoadingFrame.Visible = true
-
 
 	pcall(function()
 		if not Settings.ConfigurationSaving.FileName then
@@ -1040,7 +1129,6 @@ function RayfieldLibrary:CreateWindow(Settings)
 			TweenService:Create(KeyMain.NoteMessage, TweenInfo.new(0.4, Enum.EasingStyle.Quint), {TextTransparency = 0}):Play()
 			wait(0.15)
 			TweenService:Create(KeyMain.Hide, TweenInfo.new(0.4, Enum.EasingStyle.Quint), {ImageTransparency = 0.3}):Play()
-
 
 			KeyUI.Main.Input.InputBox.FocusLost:Connect(function()
 				if #KeyUI.Main.Input.InputBox.Text == 0 then return end
@@ -1381,8 +1469,6 @@ function RayfieldLibrary:CreateWindow(Settings)
 			Main.ImageTransparency = 1
 			Background.BackgroundTransparency = 1
 
-
-
 			local opened = false 
 			local mouse = game.Players.LocalPlayer:GetMouse()
 			Main.Image = "http://www.roblox.com/asset/?id=11415645739"
@@ -1677,7 +1763,6 @@ function RayfieldLibrary:CreateWindow(Settings)
 			Input.InputFrame.Size = UDim2.new(0, Input.InputFrame.InputBox.TextBounds.X + 24, 0, 30)
 
 			Input.InputFrame.InputBox.FocusLost:Connect(function()
-
 
 				local Success, Response = pcall(function()
 					InputSettings.Callback(Input.InputFrame.InputBox.Text)
@@ -2341,7 +2426,6 @@ function RayfieldLibrary:CreateWindow(Settings)
 					TweenService:Create(Toggle.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {Transparency = 0}):Play()
 				end
 
-
 				SaveConfiguration()
 			end)
 
@@ -2632,7 +2716,6 @@ function RayfieldLibrary:CreateWindow(Settings)
 	return Window
 end
 
-
 function RayfieldLibrary:Destroy()
 	Rayfield:Destroy()
 end
@@ -2688,7 +2771,6 @@ for _, TopbarButton in ipairs(Topbar:GetChildren()) do
 		end)
 	end
 end
-
 
 function RayfieldLibrary:LoadConfiguration()
 	if CEnabled then
