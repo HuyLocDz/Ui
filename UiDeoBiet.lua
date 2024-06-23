@@ -135,9 +135,9 @@ local Camera = workspace.CurrentCamera
 local Main = Rayfield.Main
 local Topbar = Main.Topbar
 local Elements = Main.Elements
-local Elements = Main.Elements
 local LoadingFrame = Main.LoadingFrame
 local TabList = Main.TabList
+local InfoPrompt = Rayfield.Info
 
 Rayfield.DisplayOrder = 100
 Elements.UIPageLayout.TouchInputEnabled = false
