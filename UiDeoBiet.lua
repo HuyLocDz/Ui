@@ -1,3 +1,6 @@
+
+
+return RayfieldLibrary
 local Release = "Beta 8"
 local NotificationDuration = 6.5
 local RayfieldFolder = "Rayfield"
@@ -135,11 +138,13 @@ local Camera = workspace.CurrentCamera
 local Main = Rayfield.Main
 local Topbar = Main.Topbar
 local Elements = Main.Elements
+local Elements = Main.Elements
 local LoadingFrame = Main.LoadingFrame
 local TabList = Main.TabList
 local InfoPrompt = Rayfield.Info
 
 Rayfield.DisplayOrder = 100
+Elements.UIPageLayout.TouchInputEnabled = false
 LoadingFrame.Version.Text = Release
 
 -- Variables
@@ -182,14 +187,23 @@ function ChangeTheme(ThemeName)
 			end
 		end
 	end
-
 end
 
 local function AddDraggingFunctionality(DragPoint, Main)
 	pcall(function()
-		local Dragging, DragInput, MousePos, FramePos = false
+		local Dragging, DragInput, MousePos, FramePos, Conduct = false,false,false,false,false
+		UserInputService.InputBegan:Connect(function(Input)
+			if (Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch) then
+				Conduct = true
+				Input.Changed:Connect(function()
+					if Input.UserInputState == Enum.UserInputState.End then
+						Conduct = false
+					end
+				end)
+			end
+		end)
 		DragPoint.InputBegan:Connect(function(Input)
-			if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+			if (Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch) and not Conduct then
 				Dragging = true
 				MousePos = Input.Position
 				FramePos = Main.Position
@@ -202,7 +216,7 @@ local function AddDraggingFunctionality(DragPoint, Main)
 			end
 		end)
 		DragPoint.InputChanged:Connect(function(Input)
-			if Input.UserInputType == Enum.UserInputType.MouseMovement then
+			if (Input.UserInputType == Enum.UserInputType.MouseMovement or Input.UserInputType == Enum.UserInputType.Touch) then
 				DragInput = Input
 			end
 		end)
@@ -210,6 +224,7 @@ local function AddDraggingFunctionality(DragPoint, Main)
 			if Input == DragInput and Dragging then
 				local Delta = Input.Position - MousePos
 				TweenService:Create(Main, TweenInfo.new(0.45, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Position  = UDim2.new(FramePos.X.Scale,FramePos.X.Offset + Delta.X, FramePos.Y.Scale, FramePos.Y.Offset + Delta.Y)}):Play()
+				TweenService:Create(InfoPrompt, TweenInfo.new(0.6, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Position  = UDim2.new(FramePos.X.Scale,FramePos.X.Offset + Delta.X+ 370, FramePos.Y.Scale, FramePos.Y.Offset + Delta.Y)}):Play()
 			end
 		end)
 	end)
