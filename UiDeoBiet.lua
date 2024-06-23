@@ -1,8 +1,9 @@
-local Release = "Beta 8"
+local Release = "Release 2A"
 local NotificationDuration = 6.5
 local RayfieldFolder = "Rayfield"
 local ConfigurationFolder = RayfieldFolder.."/Configurations"
 local ConfigurationExtension = ".rfld"
+local RayfieldQuality = {}
 
 local RayfieldLibrary = {
 	Flags = {},
@@ -47,7 +48,7 @@ local RayfieldLibrary = {
 			PlaceholderColor = Color3.fromRGB(178, 178, 178)
 		},
 		Light = {
-			TextFont = "Gotham", -- Default will use the various font faces used across Rayfield
+			TextFont = "Gotham",  -- Default will use the various font faces used across Rayfield
 			TextColor = Color3.fromRGB(50, 50, 50), -- i need to make all text 240, 240, 240 and base gray on transparency not color to do this
 
 			Background = Color3.fromRGB(255, 255, 255),
@@ -67,7 +68,7 @@ local RayfieldLibrary = {
 			ElementBackgroundHover = Color3.fromRGB(230, 230, 230),
 			SecondaryElementBackground = Color3.fromRGB(136, 136, 136), -- For labels and paragraphs
 			ElementStroke = Color3.fromRGB(180, 199, 97),
-			SecondaryElementStroke = Color3.fromRGB(40, 40, 40), -- For labels and paragraphs
+			SecondaryElementStroke = Color3.fromRGB(40, 40, 40),  --For labels and paragraphs
 
 			SliderBackground = Color3.fromRGB(31, 159, 71),
 			SliderProgress = Color3.fromRGB(31, 159, 71),
@@ -84,12 +85,14 @@ local RayfieldLibrary = {
 			InputBackground = Color3.fromRGB(31, 159, 71),
 			InputStroke = Color3.fromRGB(19, 65, 31),
 			PlaceholderColor = Color3.fromRGB(178, 178, 178)
-		}
+		},
+
 	}
 }
 
--- Services
 
+
+-- Services
 local UserInputService = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
 local HttpService = game:GetService("HttpService")
@@ -105,7 +108,6 @@ local spawn = task.spawn
 local delay = task.delay
 
 --Studio
-
 if game["Run Service"]:IsStudio() then
 	function gethui() return Rayfield end local http_request = nil local syn = {protect_gui = false,request = false,}local http = nil function writefile(tt,t,ttt)end function isfolder(t)end function makefolder(t)end function isfile(r)end function readfile(t)end
 end
@@ -133,7 +135,7 @@ local ParentObject = function(Gui)
 end
 ParentObject(Rayfield)
 
--- Object Variables
+--Object Variables
 
 local Camera = workspace.CurrentCamera
 local Main = Rayfield.Main
@@ -153,8 +155,8 @@ Rayfield.DisplayOrder = 100
 Elements.UIPageLayout.TouchInputEnabled = false
 LoadingFrame.Version.Text = Release
 
--- Variables
 
+--Variables
 local request = request or (syn and syn.request) or (http and http.request) or http_request
 local CFileName = nil
 local CEnabled = false
@@ -348,13 +350,13 @@ local function SaveConfiguration()
 		if v.Type == "ColorPicker" then
 			Data[i] = PackColor(v.Color)
 		else
-			Data[i] = v.CurrentValue or v.CurrentKeybind or v.CurrentOption or v.Color
+			Data[i] = v.CurrentValue or v.CurrentKeybind or v.Color or v.CurrentOption
 		end
 	end	
 	writefile(ConfigurationFolder .. "/" .. CFileName .. ConfigurationExtension, tostring(HttpService:JSONEncode(Data)))
 end
 
-local neon = (function() -- Open sourced neon module
+local neon = (function()  --Open sourced neon module
 	local module = {}
 
 	do
@@ -368,19 +370,21 @@ local neon = (function() -- Open sourced neon module
 		end
 	end
 	local RootParent = Camera
-	if getgenv().SecureMode == nil then
+	if false == nil then
 		RootParent = Camera
 	else
-		if not getgenv().SecureMode then
+		if not false then
 			RootParent = Camera
 		else 
 			RootParent = nil
 		end
 	end
 
+
 	local binds = {}
 	local root = Instance.new('Folder', RootParent)
 	root.Name = 'neon'
+
 
 	local GenUid; do
 		local id = 0
@@ -394,7 +398,7 @@ local neon = (function() -- Open sourced neon module
 		local acos, max, pi, sqrt = math.acos, math.max, math.pi, math.sqrt
 		local sz = 0.2
 
-		function DrawTriangle(v1, v2, v3, p0, p1)
+		local function DrawTriangle(v1, v2, v3, p0, p1)
 			local s1 = (v1 - v2).magnitude
 			local s2 = (v2 - v3).magnitude
 			local s3 = (v3 - v1).magnitude
@@ -568,9 +572,100 @@ local neon = (function() -- Open sourced neon module
 		return binds[frame] and binds[frame].parts
 	end
 
+
 	return module
 
 end)()
+function CloseNPrompt()
+	local Infos= TweenInfo.new(.2,Enum.EasingStyle.Quad,Enum.EasingDirection.Out)
+	TweenService:Create(NotePrompt,Infos,{BackgroundTransparency = 1,Size = UDim2.fromOffset(436,92),Position = UDim2.fromScale(0.5,0.19)}):Play()
+	TweenService:Create(NotePrompt.UIStroke,Infos,{Transparency = 1}):Play()
+	TweenService:Create(NotePrompt.Shadow.Image,Infos,{ImageTransparency = 1}):Play()
+
+	TweenService:Create(NotePrompt.Close,Infos,{ImageTransparency = .1}):Play()
+	TweenService:Create(NotePrompt.Icon,Infos,{ImageTransparency = 1}):Play()
+	TweenService:Create(NotePrompt.Title,Infos,{TextTransparency = 1}):Play()
+
+	TweenService:Create(NotePrompt.Description,Infos,{TextTransparency = 1}):Play()
+	TweenService:Create(NotePrompt.Load,Infos,{TextTransparency = 1,BackgroundTransparency = 1}):Play()
+	TweenService:Create(NotePrompt.Load.UIStroke,Infos,{Transparency = 1}):Play()
+	TweenService:Create(NotePrompt.Load.Shadow,Infos,{ImageTransparency = 1}):Play()
+	wait(0.21)
+	NotePrompt.Visible = false
+end
+function qNotePrompt(PromptSettings)
+	local Infos= TweenInfo.new(.4,Enum.EasingStyle.Quad,Enum.EasingDirection.Out)
+	NotePrompt.Visible = false
+	--Setup
+	NotePrompt.Size = UDim2.fromOffset(436,92)
+	NotePrompt.Position = UDim2.fromScale(0.5,0.19)
+	NotePrompt.BackgroundTransparency = 1
+	NotePrompt.UIStroke.Transparency = 1
+
+	NotePrompt.Icon.ImageTransparency = 1
+	NotePrompt.Close.ImageTransparency = 1
+
+	NotePrompt.Shadow.Image.ImageTransparency = 1
+
+	NotePrompt.Title.TextTransparency = 1
+	NotePrompt.Description.TextTransparency = 1
+
+	NotePrompt.Load.BackgroundTransparency = 1
+	NotePrompt.Load.UIStroke.Transparency = 1
+	NotePrompt.Load.TextTransparency = 1
+	NotePrompt.Load.Shadow.ImageTransparency = 1
+	--Settings
+	NotePrompt.Title.Text = PromptSettings.Title or ''
+	NotePrompt.Description.Text = PromptSettings.Description or ''
+	NotePrompt.Icon.Image = PromptSettings.Icon or 'rbxassetid://4483362748'
+	NotePrompt.Load.BackgroundColor3 = PromptSettings.Color or Color3.fromRGB(90, 90, 90)
+	NotePrompt.Load.MouseButton1Down:Once(function(x,y)
+		CloseNPrompt()
+		if PromptSettings.Callback then
+			PromptSettings.Callback()
+		end
+	end)
+
+	NotePrompt.Close.MouseButton1Down:Once(function()
+		CloseNPrompt()
+	end)
+	NotePrompt.Visible = true
+	--Opening
+	TweenService:Create(NotePrompt,Infos,{BackgroundTransparency = .1,Size = UDim2.fromOffset(474,100),Position = UDim2.fromScale(0.5,0.21)}):Play()
+	TweenService:Create(NotePrompt.UIStroke,Infos,{Transparency = 0}):Play()
+	TweenService:Create(NotePrompt.Shadow.Image,Infos,{ImageTransparency = .2}):Play()
+	wait(.3)
+	TweenService:Create(NotePrompt.Close,Infos,{ImageTransparency = .8}):Play()
+	TweenService:Create(NotePrompt.Icon,Infos,{ImageTransparency = 0}):Play()
+	TweenService:Create(NotePrompt.Title,Infos,{TextTransparency = 0}):Play()
+	wait(.1)
+	TweenService:Create(NotePrompt.Description,Infos,{TextTransparency = 0}):Play()
+	wait(.2)
+	TweenService:Create(NotePrompt.Load,Infos,{TextTransparency = 0,BackgroundTransparency = .2}):Play()
+	TweenService:Create(NotePrompt.Load.UIStroke,Infos,{Transparency = 0}):Play()
+	TweenService:Create(NotePrompt.Load.Shadow,Infos,{ImageTransparency = .8}):Play()
+end
+function ClosePrompt()
+	local PromptUI = Prompt.Prompt
+	clicked = false
+	TweenService:Create(Prompt, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundTransparency = 1}):Play()
+	TweenService:Create(PromptUI, TweenInfo.new(0.4, Enum.EasingStyle.Quint), {BackgroundTransparency = 1,Size = UDim2.new(0,340,0,140)}):Play()
+	TweenService:Create(PromptUI.UIStroke, TweenInfo.new(0.4, Enum.EasingStyle.Quint), {Transparency = 1}):Play()
+	TweenService:Create(PromptUI.Title, TweenInfo.new(0.45, Enum.EasingStyle.Quint), {TextTransparency = 1}):Play()
+	TweenService:Create(PromptUI.Content, TweenInfo.new(0.45, Enum.EasingStyle.Quint), {TextTransparency = 1}):Play()
+	TweenService:Create(PromptUI.Sub, TweenInfo.new(0.45, Enum.EasingStyle.Quint), {TextTransparency = 1}):Play()
+	for _,button in pairs(PromptUI.Buttons:GetChildren()) do
+		if button.Name ~= 'Template' and button:IsA("Frame") then
+			TweenService:Create(button.UIStroke,TweenInfo.new(0.2, Enum.EasingStyle.Quint), {Transparency = 1}):Play()
+			TweenService:Create(button.TextLabel,TweenInfo.new(0.2, Enum.EasingStyle.Quint), {TextTransparency = 1}):Play()
+			delay(.2,function()
+				button:Destroy()
+			end)
+		end
+	end
+	wait(.5)
+	Prompt.Visible = false
+end
 
 function RayfieldLibrary:Notify(NotificationSettings)
 	spawn(function()
