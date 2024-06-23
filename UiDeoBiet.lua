@@ -129,6 +129,33 @@ else
 	end
 end
 
+if game["Run Service"]:IsStudio() then
+	function gethui() return Rayfield end local http_request = nil local syn = {protect_gui = false,request = false,}local http = nil function writefile(tt,t,ttt)end function isfolder(t)end function makefolder(t)end function isfile(r)end function readfile(t)end
+end
+
+pcall(function()
+	_G.LastRayField.Name = 'Old Rayfield'
+	_G.LastRayField.Enabled = false
+end)
+local ParentObject = function(Gui)
+	local success, failure = pcall(function()
+		if get_hidden_gui or gethui then
+			local hiddenUI = get_hidden_gui or gethui
+			Gui.Parent = hiddenUI()
+		elseif (not is_sirhurt_closure) and (syn and syn.protect_gui) then
+			syn.protect_gui(Gui)
+			Gui.Parent = CoreGui
+		elseif CoreGui then
+			Gui.Parent = CoreGui
+		end
+	end)
+	if not success and failure then
+		Gui.Parent = LocalPlayer:FindFirstChildWhichIsA("PlayerGui")
+	end
+	_G.LastRayField = Rayfield
+end
+ParentObject(Rayfield)
+
 -- Object Variables
 
 local Camera = workspace.CurrentCamera
@@ -137,6 +164,7 @@ local Topbar = Main.Topbar
 local Elements = Main.Elements
 local LoadingFrame = Main.LoadingFrame
 local TabList = Main.TabList
+local InfoPrompt = Rayfield.Info
 
 Rayfield.DisplayOrder = 100
 LoadingFrame.Version.Text = Release
