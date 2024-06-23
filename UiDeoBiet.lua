@@ -1324,11 +1324,6 @@ function RayfieldLibrary:CreateWindow(Settings)
 
 			local Button = Elements.Template.Button:Clone()
 			ButtonValue.Button = Button
-			Tab.Elements[Button.Name] = {
-				type = 'button',
-				section = ButtonSettings.SectionParent,
-				element = Button
-			}
 			AddInfos(Button,ButtonSettings.Info,'button')
 
 			Button.Name = ButtonSettings.Name
