@@ -102,32 +102,28 @@ local Rayfield = game:GetObjects("rbxassetid://10804731440")[1]
 
 Rayfield.Enabled = false
 
-if gethui then
-	Rayfield.Parent = gethui()
-elseif syn.protect_gui then 
-	syn.protect_gui(Rayfield)
-	Rayfield.Parent = CoreGui
-elseif CoreGui:FindFirstChild("RobloxGui") then
-	Rayfield.Parent = CoreGui:FindFirstChild("RobloxGui")
-else
-	Rayfield.Parent = CoreGui
-end
-
-if gethui then
-	for _, Interface in ipairs(gethui():GetChildren()) do
-		if Interface.Name == Rayfield.Name and Interface ~= Rayfield then
-			Interface.Enabled = false
-			Interface.Name = "Rayfield-Old"
+pcall(function()
+	_G.LastRayField.Name = 'Old Rayfield'
+	_G.LastRayField.Enabled = false
+end)
+local ParentObject = function(Gui)
+	local success, failure = pcall(function()
+		if get_hidden_gui or gethui then
+			local hiddenUI = get_hidden_gui or gethui
+			Gui.Parent = hiddenUI()
+		elseif (not is_sirhurt_closure) and (syn and syn.protect_gui) then
+			syn.protect_gui(Gui)
+			Gui.Parent = CoreGui
+		elseif CoreGui then
+			Gui.Parent = CoreGui
 		end
+	end)
+	if not success and failure then
+		Gui.Parent = LocalPlayer:FindFirstChildWhichIsA("PlayerGui")
 	end
-else
-	for _, Interface in ipairs(CoreGui:GetChildren()) do
-		if Interface.Name == Rayfield.Name and Interface ~= Rayfield then
-			Interface.Enabled = false
-			Interface.Name = "Rayfield-Old"
-		end
-	end
+	_G.LastRayField = Rayfield
 end
+ParentObject(Rayfield)
 
 -- Object Variables
 
@@ -1752,7 +1748,6 @@ function RayfieldLibrary:CreateWindow(Settings)
 		-- Dropdown
 		function Tab:CreateDropdown(DropdownSettings)
 			local Dropdown = Elements.Template.Dropdown:Clone()
-			local SearchBar = Dropdown.List["-SearchBar"]
 			local Required = 1
 			--local Debounce = false
 			DropdownSettings.Items = {
@@ -1787,7 +1782,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 
 
 			for _, ununusedoption in ipairs(Dropdown.List:GetChildren()) do
-				if ununusedoption.ClassName == "Frame" and ununusedoption.Name ~= 'PlaceHolder' and ununusedoption.Name ~= "-SearchBar" then
+				if ununusedoption.ClassName == "Frame" and ununusedoption.Name ~= 'PlaceHolder' then
 					ununusedoption:Destroy()
 				end
 			end
@@ -1809,7 +1804,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 					for _,kj in ipairs(DropdownSettings.Items.Selected) do
 						if boolean and typeof(kj.Option) == "Instance" then
 							for _, v in pairs(Dropdown.List:GetChildren()) do
-								if v.ClassName == "Frame" and v.Name ~= 'PlaceHolder' and v.Name ~= "-SearchBar" then
+								if v.ClassName == "Frame" then
 									TweenService:Create(v, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundColor3 = Color3.fromRGB(30, 30, 30)}):Play()
 								end
 							end
@@ -1835,7 +1830,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 					Debounce = true
 					TweenService:Create(Dropdown, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {Size = UDim2.new(0,465, 0, 44)}):Play()
 					for _, DropdownOpt in ipairs(Dropdown.List:GetChildren()) do
-						if DropdownOpt.ClassName == "Frame" and DropdownOpt.Name ~= 'PlaceHolder' and DropdownOpt~= SearchBar then
+						if DropdownOpt.ClassName == "Frame" and DropdownOpt.Name ~= 'PlaceHolder' then
 							TweenService:Create(DropdownOpt, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundTransparency = 1}):Play()
 							TweenService:Create(DropdownOpt.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {Transparency = 1}):Play()
 							TweenService:Create(DropdownOpt.Title, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {TextTransparency = 1}):Play()
@@ -1852,27 +1847,10 @@ function RayfieldLibrary:CreateWindow(Settings)
 					TweenService:Create(Dropdown.List, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {ScrollBarImageTransparency = 0.7}):Play()
 					TweenService:Create(Dropdown.Toggle, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {Rotation = 0}):Play()	
 					for _, DropdownOpt in ipairs(Dropdown.List:GetChildren()) do
-						if DropdownOpt.ClassName == "Frame" and DropdownOpt.Name ~= 'PlaceHolder' and DropdownOpt ~= SearchBar then
+						if DropdownOpt.ClassName == "Frame" and DropdownOpt.Name ~= 'PlaceHolder' then
 							TweenService:Create(DropdownOpt, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundTransparency = 0}):Play()
 							TweenService:Create(DropdownOpt.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {Transparency = 0}):Play()
 							TweenService:Create(DropdownOpt.Title, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {TextTransparency = 0}):Play()
-						end
-					end
-				end
-			end)
-
-			Dropdown.List['-SearchBar'].Input:GetPropertyChangedSignal('Text'):Connect(function()
-				local InputText=string.upper(Dropdown.List['-SearchBar'].Input.Text)
-				for _,item in ipairs(Dropdown.List:GetChildren()) do
-					if item:IsA('Frame') and item.Name ~= 'Template' and item ~= SearchBar and item.Name ~= 'PlaceHolder' then
-						if InputText=="" or InputText==" "or string.find(string.upper(item.Name),InputText)~=nil then
-							TweenService:Create(item, TweenInfo.new(0.15, Enum.EasingStyle.Quint), {BackgroundTransparency = 0}):Play()
-							TweenService:Create(item.UIStroke, TweenInfo.new(0.15, Enum.EasingStyle.Quint), {Transparency = 0}):Play()
-							TweenService:Create(item.Title, TweenInfo.new(0.15, Enum.EasingStyle.Quint), {TextTransparency = 0}):Play()
-						else
-							TweenService:Create(item, TweenInfo.new(0.15, Enum.EasingStyle.Quint), {BackgroundTransparency = 1}):Play()
-							TweenService:Create(item.UIStroke, TweenInfo.new(0.15, Enum.EasingStyle.Quint), {Transparency = 1}):Play()
-							TweenService:Create(item.Title, TweenInfo.new(0.15, Enum.EasingStyle.Quint), {TextTransparency = 1}):Play()
 						end
 					end
 				end
@@ -2006,7 +1984,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 					if not Multi then
 						TweenService:Create(Dropdown, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {Size = UDim2.new(0,465, 0, 45)}):Play()
 						for _, DropdownOpt in ipairs(Dropdown.List:GetChildren()) do
-							if DropdownOpt.ClassName == "Frame" and DropdownOpt.Name ~= "PlaceHolder" and DropdownOpt ~= SearchBar then
+							if DropdownOpt.ClassName == "Frame" and DropdownOpt.Name ~= "PlaceHolder" then
 								TweenService:Create(DropdownOpt, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundTransparency = 1}):Play()
 								TweenService:Create(DropdownOpt.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {Transparency = 1}):Play()
 								TweenService:Create(DropdownOpt.Title, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {TextTransparency = 1}):Play()
@@ -2104,14 +2082,14 @@ function RayfieldLibrary:CreateWindow(Settings)
 					print("Rayfield | "..DropdownSettings.Name.." Callback Error " ..tostring(Response))
 				end
 				for _, option in ipairs(Dropdown.List:GetChildren()) do
-					if option.ClassName == "Frame" and option ~= SearchBar and option.Name ~= "Placeholder" then
+					if option.ClassName == "Frame" and option.Name ~= "Placeholder" then
 						option:Destroy()
 					end
 				end
 				AddOptions(NewOptions,Selecteds)
 			end
 			function DropdownSettings:Remove(Item)
-				if Item.Name ~= "Placeholder" and Item ~= SearchBar then
+				if Item.Name ~= "Placeholder" then
 					if DropdownSettings.Items[Item] then
 						DropdownSettings.Items[Item].Option:Destroy()
 						table.remove(DropdownSettings.Items,table.find(DropdownSettings.Items,Item))
@@ -2119,7 +2097,6 @@ function RayfieldLibrary:CreateWindow(Settings)
 						Error('Option not found.')
 					end
 				else
-					SearchBar:Destroy()
 					Error("why you trynna remove the searchbar? FINE")
 				end
 				if Dropdown.Selected.Text == Item then
@@ -2136,7 +2113,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 				Debounce = true
 				TweenService:Create(Dropdown, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {Size = UDim2.new(0,465, 0, 44)}):Play()
 				for _, DropdownOpt in ipairs(Dropdown.List:GetChildren()) do
-					if DropdownOpt.ClassName == "Frame" and DropdownOpt.Name ~= 'PlaceHolder' and DropdownOpt.Name ~= "-SearchBar" then
+					if DropdownOpt.ClassName == "Frame" and DropdownOpt.Name ~= 'PlaceHolder'" then
 						TweenService:Create(DropdownOpt, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundTransparency = 1}):Play()
 						TweenService:Create(DropdownOpt.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {Transparency = 1}):Play()
 						TweenService:Create(DropdownOpt.Title, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {TextTransparency = 1}):Play()
