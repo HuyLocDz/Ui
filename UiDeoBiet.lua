@@ -335,7 +335,7 @@ local function LoadConfiguration(Configuration)
 				end    
 			end)
 		else
-			ArrayFieldLibrary:Notify({Title = "Flag Error", Content = "ArrayField was unable to find '"..FlagName.. "'' in the current script"})
+			ArrayFieldLibrary:Notify({Title = "Flag Error", Content = "ArrayField Was Unable To Find '"..FlagName.. "'' In The Current Script", Image = "16730867128"})
 		end
 	end
 end
@@ -812,8 +812,6 @@ function ArrayFieldLibrary:Notify(NotificationSettings)
 	end)
 end
 
-ArrayFieldLibrary:Notify({Title = "Modified by Hosvile", Content = "Want more scripts that has been modified to support mobile? Check out my YouTube Channel Hosvile", Duration = 7})
-
 function CloseSideBar()
 	Debounce = true
 	SideBarClosed = true
@@ -842,7 +840,7 @@ function Hide()
 	Debounce = true
 	if not hasHidden then
 		hasHidden = true
-		ArrayFieldLibrary:Notify({Title = "Interface Hidden", Content = "The interface has been hidden, you can unhide the interface by tapping RightShift", Duration = 10})
+		ArrayFieldLibrary:Notify({Title = "Interface Hidden", Content = "The Interface Has Been Hidden, You Can Unhide The Interface By Tapping Right-Shift", Duration = 5, Image = "16730867128"})
 		--delay(60, function() hasHidden = false end)
 	end
 	TweenService:Create(Main, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {Size = UDim2.new(0, 470, 0, 400)}):Play()
@@ -3480,11 +3478,11 @@ FieldScreen.Parent = gethui and gethui() or game:GetService("CoreGui")
 
 local UniButton = Instance.new("ImageLabel")
 UniButton.Name = "UniButton"
-UniButton.Image = "rbxassetid://14958620447"
+UniButton.Image = "rbxassetid://16730867128"
 UniButton.Active = false
 --UniButton.AnchorPoint = Vector2.new(0.5,0.5)
 UniButton.ZIndex = 10
-UniButton.Position = UDim2.new(0.8,0,0,0)
+UniButton.Position = UDim2.new(0.8,0,0.06,0)
 UniButton.BorderSizePixel = 0
 UniButton.BackgroundTransparency = 1
 UniButton.Size = UDim2.new(0, 42, 0, 42)
@@ -3569,7 +3567,7 @@ function ArrayFieldLibrary:LoadConfiguration()
 		pcall(function()
 			if isfile(ConfigurationFolder .. "/" .. CFileName .. ConfigurationExtension) then
 				LoadConfiguration(readfile(ConfigurationFolder .. "/" .. CFileName .. ConfigurationExtension))
-				ArrayFieldLibrary:Notify({Title = "Configuration Loaded", Content = "The configuration file for this script has been loaded from a previous session"})
+				ArrayFieldLibrary:Notify({Title = "Configuration Loaded", Content = "The Configuration File For This Script Has Been Loaded From A Previous Session"})
 			end
 		end)
 	end
