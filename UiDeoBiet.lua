@@ -1856,7 +1856,7 @@ function ArrayFieldLibrary:CreateWindow(Settings)
 		end
 
 		-- Paragraph
-		function Tab:CreateParagraph(ParagraphSettings)
+		function Tab:CreateParagraph(ParagraphSettings,SectionParent)
 			local ParagraphValue = {}
 
 			local Paragraph = Elements.Template.Paragraph:Clone()
