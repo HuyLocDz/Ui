@@ -90,8 +90,6 @@ local ArrayFieldLibrary = {
 	}
 }
 
-
-
 -- Services
 local UserInputService = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
@@ -154,7 +152,6 @@ local InfoPrompt = ArrayField.Info
 ArrayField.DisplayOrder = 100
 Elements.UIPageLayout.TouchInputEnabled = false
 LoadingFrame.Version.Text = Release
-
 
 --Variables
 local request = request or (syn and syn.request) or (http and http.request) or http_request
@@ -380,11 +377,9 @@ local neon = (function()  --Open sourced neon module
 		end
 	end
 
-
 	local binds = {}
 	local root = Instance.new('Folder', RootParent)
 	root.Name = 'neon'
-
 
 	local GenUid; do
 		local id = 0
@@ -572,7 +567,6 @@ local neon = (function()  --Open sourced neon module
 		return binds[frame] and binds[frame].parts
 	end
 
-
 	return module
 
 end)()
@@ -751,8 +745,6 @@ function ArrayFieldLibrary:Notify(NotificationSettings)
 		TweenService:Create(Notification.Title, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {TextTransparency = 0}):Play()
 		TweenService:Create(Notification.Description, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {TextTransparency = 0.2}):Play()
 		wait(0.2)
-
-
 
 		-- Requires Graphics Level 8-10
 		if false == nil then
@@ -1086,7 +1078,6 @@ function Maximise()
 		end
 	end
 
-
 	wait(0.1)
 
 	for _, tabbtn in ipairs(TopList:GetChildren()) do
@@ -1107,7 +1098,6 @@ function Maximise()
 
 		end
 	end
-
 
 	wait(0.5)
 	Debounce = false
@@ -1217,7 +1207,6 @@ function ArrayFieldLibrary:CreateWindow(Settings)
 	Topbar.Visible = false
 	Elements.Visible = false
 	LoadingFrame.Visible = true
-
 
 	pcall(function()
 		if not Settings.ConfigurationSaving.FileName then
@@ -2153,7 +2142,6 @@ function ArrayFieldLibrary:CreateWindow(Settings)
 			TweenService:Create(Dropdown.UIStroke, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {Transparency = 0}):Play()
 			TweenService:Create(Dropdown.Title, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {TextTransparency = 0}):Play()	
 
-
 			for _, ununusedoption in ipairs(Dropdown.List:GetChildren()) do
 				if ununusedoption.ClassName == "Frame" and ununusedoption.Name ~= 'PlaceHolder' and ununusedoption.Name ~= "-SearchBar" then
 					ununusedoption:Destroy()
@@ -2715,7 +2703,6 @@ function ArrayFieldLibrary:CreateWindow(Settings)
 			TweenService:Create(Toggle.UIStroke, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {Transparency = 0}):Play()
 			TweenService:Create(Toggle.Title, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {TextTransparency = 0}):Play()	
 
-
 			if not ToggleSettings.CurrentValue then
 				Toggle.Switch.Indicator.Position = UDim2.new(1, -40, 0.5, 0)
 				Toggle.Switch.Indicator.UIStroke.Color = SelectedTheme.ToggleDisabledStroke
@@ -3193,7 +3180,6 @@ function ArrayFieldLibrary:CreateWindow(Settings)
 				Slider.Main.Information.Text = tostring(SliderSettings.CurrentValue) .. " " .. SliderSettings.Suffix
 			end
 
-
 			Slider.MouseEnter:Connect(function()
 				TweenService:Create(Slider, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
 			end)
@@ -3341,7 +3327,6 @@ function ArrayFieldLibrary:CreateWindow(Settings)
 			end
 			return SliderSettings
 		end
-
 
 		return Tab
 	end
@@ -3583,7 +3568,6 @@ for _, TopbarButton in ipairs(Topbar:GetChildren()) do
 		end)
 	end
 end
-
 
 function ArrayFieldLibrary:LoadConfiguration()
 	if CEnabled then
