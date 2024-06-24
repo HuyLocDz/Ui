@@ -102,6 +102,37 @@ local Rayfield = game:GetObjects("rbxassetid://10804731440")[1]
 
 Rayfield.Enabled = false
 
+if gethui then
+	Rayfield.Parent = gethui()
+elseif syn.protect_gui then 
+	syn.protect_gui(Rayfield)
+	Rayfield.Parent = CoreGui
+elseif CoreGui:FindFirstChild("RobloxGui") then
+	Rayfield.Parent = CoreGui:FindFirstChild("RobloxGui")
+else
+	Rayfield.Parent = CoreGui
+end
+
+if gethui then
+	for _, Interface in ipairs(gethui():GetChildren()) do
+		if Interface.Name == Rayfield.Name and Interface ~= Rayfield then
+			Interface.Enabled = false
+			Interface.Name = "Rayfield-Old"
+		end
+	end
+else
+	for _, Interface in ipairs(CoreGui:GetChildren()) do
+		if Interface.Name == Rayfield.Name and Interface ~= Rayfield then
+			Interface.Enabled = false
+			Interface.Name = "Rayfield-Old"
+		end
+	end
+end
+
+if game["Run Service"]:IsStudio() then
+	function gethui() return Rayfield end local http_request = nil local syn = {protect_gui = false,request = false,}local http = nil function writefile(tt,t,ttt)end function isfolder(t)end function makefolder(t)end function isfile(r)end function readfile(t)end
+end
+
 pcall(function()
 	_G.LastRayField.Name = 'Old Rayfield'
 	_G.LastRayField.Enabled = false
@@ -1747,423 +1778,271 @@ function RayfieldLibrary:CreateWindow(Settings)
 
 		-- Dropdown
 		function Tab:CreateDropdown(DropdownSettings)
-			local Dropdown = Elements.Template.Dropdown:Clone()
-			local SearchBar = Dropdown.List["-SearchBar"]
-			local Required = 1
-			--local Debounce = false
-			DropdownSettings.Items = {
-				Selected = {Default = DropdownSettings.Selected or nil}
-			}
-			AddInfos(Dropdown,DropdownSettings,'dropdown')
-			DropdownSettings.Locked = false
-			local Multi = DropdownSettings.MultiSelection or false
-			if string.find(DropdownSettings.Name,"closed") then
-				Dropdown.Name = "Dropdown"
-			else
-				Dropdown.Name = DropdownSettings.Name
-			end
-			Dropdown.Title.Text = DropdownSettings.Name
-			Dropdown.Visible = true
-			if DropdownSettings.SectionParent then
-				Dropdown.Parent = DropdownSettings.SectionParent.Holder
-			else
-				Dropdown.Parent = TabPage
-			end
+            local Dropdown = Elements.Template.Dropdown:Clone()
+            local SearchBar = Dropdown.List["-SearchBar"]
+            local Required = 1
+            local Debounce = false
+            local Multi = DropdownSettings.MultiSelection or false
 
-			Dropdown.List.Visible = false
-			Dropdown.BackgroundTransparency = 1
-			Dropdown.UIStroke.Transparency = 1
-			Dropdown.Title.TextTransparency = 1
+            -- Initialize Dropdown Settings
+            DropdownSettings.Items = { Selected = { Default = DropdownSettings.Selected or nil } }
+            DropdownSettings.Locked = false
 
-			Dropdown.Size = UDim2.new(0,465, 0, 44)
+            AddInfos(Dropdown, DropdownSettings, 'dropdown')
 
-			TweenService:Create(Dropdown, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {BackgroundTransparency = 0}):Play()
-			TweenService:Create(Dropdown.UIStroke, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {Transparency = 0}):Play()
-			TweenService:Create(Dropdown.Title, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {TextTransparency = 0}):Play()	
+            -- Set Dropdown Name and Title
+            Dropdown.Name = DropdownSettings.Name:find("closed") and "Dropdown" or DropdownSettings.Name
+            Dropdown.Title.Text = DropdownSettings.Name
+            Dropdown.Visible = true
 
+            -- Set Parent
+            Dropdown.Parent = DropdownSettings.SectionParent and DropdownSettings.SectionParent.Holder or TabPage
 
-			for _, ununusedoption in ipairs(Dropdown.List:GetChildren()) do
-				if ununusedoption.ClassName == "Frame" and ununusedoption.Name ~= 'PlaceHolder' and ununusedoption.Name ~= "-SearchBar" then
-					ununusedoption:Destroy()
-				end
-			end
+            -- Set Initial Dropdown Properties
+            Dropdown.List.Visible = false
+            Dropdown.BackgroundTransparency = 1
+            Dropdown.UIStroke.Transparency = 1
+            Dropdown.Title.TextTransparency = 1
+            Dropdown.Size = UDim2.new(0, 465, 0, 44)
 
-			Dropdown.Toggle.Rotation = 180
+            -- Tween Animations for Initial Appearance
+            local function playTween(target, properties, duration)
+                TweenService:Create(target, TweenInfo.new(duration, Enum.EasingStyle.Quint), properties):Play()
+            end
 
-			local function GetOptionInstance(Name)
-				for i, v in pairs(Dropdown.List:GetChildren()) do
-					if typeof(Name) == "Instance" and v.Name == Name.Name or v.Name == Name or v == Name then
-						TweenService:Create(v, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundColor3 = Color3.fromRGB(30, 30, 30)}):Play()
-						return v
-					end
-				end
-			end
+            playTween(Dropdown, { BackgroundTransparency = 0 }, 0.7)
+            playTween(Dropdown.UIStroke, { Transparency = 0 }, 0.7)
+            playTween(Dropdown.Title, { TextTransparency = 0 }, 0.7)
 
-			local function RefreshSelected(boolean)
-				if #DropdownSettings.Items.Selected > 0 then
-					local NT = {}
-					for _,kj in ipairs(DropdownSettings.Items.Selected) do
-						if boolean and typeof(kj.Option) == "Instance" then
-							for _, v in pairs(Dropdown.List:GetChildren()) do
-								if v.ClassName == "Frame" and v.Name ~= 'PlaceHolder' and v.Name ~= "-SearchBar" then
-									TweenService:Create(v, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundColor3 = Color3.fromRGB(30, 30, 30)}):Play()
-								end
-							end
-							TweenService:Create(kj.Option, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundColor3 = Color3.fromRGB(40, 40, 40)}):Play()
-						end
-						NT[#NT+1] = kj.Name
-					end
-					Dropdown.Selected.Text = table.concat(NT, ", ")
-				else
-					Dropdown.Selected.Text = "Select an option"
-				end
-			end
+            -- Cleanup Unused Options
+            for _, child in ipairs(Dropdown.List:GetChildren()) do
+                if child:IsA("Frame") and child.Name ~= 'PlaceHolder' and child.Name ~= "-SearchBar" then
+                    child:Destroy()
+                end
+            end
 
-			Dropdown.Interact.MouseButton1Click:Connect(function()
-				if DropdownSettings.Locked then return end
-				TweenService:Create(Dropdown, TweenInfo.new(0.4, Enum.EasingStyle.Quint), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
-				TweenService:Create(Dropdown.UIStroke, TweenInfo.new(0.4, Enum.EasingStyle.Quint), {Transparency = 1}):Play()
-				wait(0.1)
-				TweenService:Create(Dropdown, TweenInfo.new(0.4, Enum.EasingStyle.Quint), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
-				TweenService:Create(Dropdown.UIStroke, TweenInfo.new(0.4, Enum.EasingStyle.Quint), {Transparency = 0}):Play()
-				if Debounce then return end
-				if Dropdown.List.Visible then
-					Debounce = true
-					TweenService:Create(Dropdown, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {Size = UDim2.new(0,465, 0, 44)}):Play()
-					for _, DropdownOpt in ipairs(Dropdown.List:GetChildren()) do
-						if DropdownOpt.ClassName == "Frame" and DropdownOpt.Name ~= 'PlaceHolder' and DropdownOpt~= SearchBar then
-							TweenService:Create(DropdownOpt, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundTransparency = 1}):Play()
-							TweenService:Create(DropdownOpt.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {Transparency = 1}):Play()
-							TweenService:Create(DropdownOpt.Title, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {TextTransparency = 1}):Play()
-						end
-					end
-					TweenService:Create(Dropdown.List, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {ScrollBarImageTransparency = 1}):Play()
-					TweenService:Create(Dropdown.Toggle, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {Rotation = 180}):Play()	
-					wait(0.35)
-					Dropdown.List.Visible = false
-					Debounce = false
-				else
-					TweenService:Create(Dropdown, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {Size = UDim2.new(0,465, 0, 178)}):Play()
-					Dropdown.List.Visible = true
-					TweenService:Create(Dropdown.List, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {ScrollBarImageTransparency = 0.7}):Play()
-					TweenService:Create(Dropdown.Toggle, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {Rotation = 0}):Play()	
-					for _, DropdownOpt in ipairs(Dropdown.List:GetChildren()) do
-						if DropdownOpt.ClassName == "Frame" and DropdownOpt.Name ~= 'PlaceHolder' and DropdownOpt ~= SearchBar then
-							TweenService:Create(DropdownOpt, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundTransparency = 0}):Play()
-							TweenService:Create(DropdownOpt.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {Transparency = 0}):Play()
-							TweenService:Create(DropdownOpt.Title, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {TextTransparency = 0}):Play()
-						end
-					end
-				end
-			end)
+            Dropdown.Toggle.Rotation = 180
 
-			Dropdown.List['-SearchBar'].Input:GetPropertyChangedSignal('Text'):Connect(function()
-				local InputText=string.upper(Dropdown.List['-SearchBar'].Input.Text)
-				for _,item in ipairs(Dropdown.List:GetChildren()) do
-					if item:IsA('Frame') and item.Name ~= 'Template' and item ~= SearchBar and item.Name ~= 'PlaceHolder' then
-						if InputText=="" or InputText==" "or string.find(string.upper(item.Name),InputText)~=nil then
-							TweenService:Create(item, TweenInfo.new(0.15, Enum.EasingStyle.Quint), {BackgroundTransparency = 0}):Play()
-							TweenService:Create(item.UIStroke, TweenInfo.new(0.15, Enum.EasingStyle.Quint), {Transparency = 0}):Play()
-							TweenService:Create(item.Title, TweenInfo.new(0.15, Enum.EasingStyle.Quint), {TextTransparency = 0}):Play()
-						else
-							TweenService:Create(item, TweenInfo.new(0.15, Enum.EasingStyle.Quint), {BackgroundTransparency = 1}):Play()
-							TweenService:Create(item.UIStroke, TweenInfo.new(0.15, Enum.EasingStyle.Quint), {Transparency = 1}):Play()
-							TweenService:Create(item.Title, TweenInfo.new(0.15, Enum.EasingStyle.Quint), {TextTransparency = 1}):Play()
-						end
-					end
-				end
-			end)
+            -- Refresh Selected Options Display
+            local function RefreshSelected(forceUpdate)
+                if #DropdownSettings.Items.Selected > 0 then
+                    local selectedNames = {}
+                    for _, item in ipairs(DropdownSettings.Items.Selected) do
+                        if forceUpdate and typeof(item.Option) == "Instance" then
+                            for _, v in pairs(Dropdown.List:GetChildren()) do
+                                if v:IsA("Frame") and v.Name ~= 'PlaceHolder' and v.Name ~= "-SearchBar" then
+                                    playTween(v, { BackgroundColor3 = Color3.fromRGB(30, 30, 30) }, 0.3)
+                                end
+                            end
+                            playTween(item.Option, { BackgroundColor3 = Color3.fromRGB(40, 40, 40) }, 0.3)
+                        end
+                        table.insert(selectedNames, item.Name)
+                    end
+                    Dropdown.Selected.Text = table.concat(selectedNames, ", ")
+                else
+                    Dropdown.Selected.Text = "Select an option"
+                end
+            end
 
-			Dropdown.MouseEnter:Connect(function()
-				if not Dropdown.List.Visible then
-					TweenService:Create(Dropdown, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
-				end
-			end)
+            -- Toggle Dropdown List
+            Dropdown.Interact.MouseButton1Click:Connect(function()
+                if DropdownSettings.Locked or Debounce then return end
 
-			Dropdown.MouseLeave:Connect(function()
-				TweenService:Create(Dropdown, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
-			end)
+                playTween(Dropdown, { BackgroundColor3 = SelectedTheme.ElementBackgroundHover }, 0.4)
+                playTween(Dropdown.UIStroke, { Transparency = 1 }, 0.4)
+                wait(0.1)
+                playTween(Dropdown, { BackgroundColor3 = SelectedTheme.ElementBackground }, 0.4)
+                playTween(Dropdown.UIStroke, { Transparency = 0 }, 0.4)
 
-			local function Error(text)
-				TweenService:Create(Dropdown, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {BackgroundColor3 = Color3.fromRGB(85, 0, 0)}):Play()
-				TweenService:Create(Dropdown.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {Transparency = 1}):Play()
-				Dropdown.Title.Text = text
-				wait(0.5)
-				Dropdown.Title.Text = DropdownSettings.Name
-				TweenService:Create(Dropdown, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
-				TweenService:Create(Dropdown.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {Transparency = 0}):Play()
-			end
+                if Dropdown.List.Visible then
+                    Debounce = true
+                    playTween(Dropdown, { Size = UDim2.new(0, 465, 0, 44) }, 0.5)
+                    for _, DropdownOpt in ipairs(Dropdown.List:GetChildren()) do
+                        if DropdownOpt:IsA("Frame") and DropdownOpt.Name ~= 'PlaceHolder' and DropdownOpt ~= SearchBar then
+                            playTween(DropdownOpt, { BackgroundTransparency = 1 }, 0.3)
+                            playTween(DropdownOpt.UIStroke, { Transparency = 1 }, 0.3)
+                            playTween(DropdownOpt.Title, { TextTransparency = 1 }, 0.3)
+                        end
+                    end
+                    playTween(Dropdown.List, { ScrollBarImageTransparency = 1 }, 0.3)
+                    playTween(Dropdown.Toggle, { Rotation = 180 }, 0.7)
+                    wait(0.35)
+                    Dropdown.List.Visible = false
+                    Debounce = false
+                else
+                    playTween(Dropdown, { Size = UDim2.new(0, 465, 0, 178) }, 0.5)
+                    Dropdown.List.Visible = true
+                    playTween(Dropdown.List, { ScrollBarImageTransparency = 0.7 }, 0.3)
+                    playTween(Dropdown.Toggle, { Rotation = 0 }, 0.7)
+                    for _, DropdownOpt in ipairs(Dropdown.List:GetChildren()) do
+                        if DropdownOpt:IsA("Frame") and DropdownOpt.Name ~= 'PlaceHolder' and DropdownOpt ~= SearchBar then
+                            playTween(DropdownOpt, { BackgroundTransparency = 0 }, 0.3)
+                            playTween(DropdownOpt.UIStroke, { Transparency = 0 }, 0.3)
+                            playTween(DropdownOpt.Title, { TextTransparency = 0 }, 0.3)
+                        end
+                    end
+                end
+            end)
 
-			local function AddOption(Option,Selecteds)
-				local DropdownOption = Elements.Template.Dropdown.List.Template:Clone()
-				DropdownOption:GetPropertyChangedSignal('BackgroundTransparency'):Connect(function()
-					if DropdownOption.BackgroundTransparency == 1 then
-						DropdownOption.Visible = false
-					else
-						DropdownOption.Visible = true
-					end
-				end)
-				DropdownSettings.Items[Option] = {
-					Option = DropdownOption,
-					Name = Option.Name or Option,
-					Selected = false
-				}
-				local OptionInTable = DropdownSettings.Items[Option]
-				DropdownOption.Name = Option.Name or Option
-				DropdownOption.Title.Text = Option.Name or Option
-				DropdownOption.Parent = Dropdown.List
-				DropdownOption.Visible = true
-				local IsSelected = OptionInTable.Selected
-				if typeof(Selecteds) == 'string' then
-					Selecteds = {Selecteds}
-				end
-				if Selecteds and #Selecteds > 0 then
-					for index,Selected in pairs(Selecteds) do
-						if Selected == Option then
-							IsSelected = true
-							OptionInTable.Selected = true
-							table.insert(DropdownSettings.Items.Selected,OptionInTable)
-							DropdownSettings.Items.Selected[table.find(DropdownSettings.Items.Selected,OptionInTable)].Selected = true
-						end
-					end
-					RefreshSelected()
-				end
+            -- Search Bar Filtering
+            SearchBar.Input:GetPropertyChangedSignal('Text'):Connect(function()
+                local inputText = string.upper(SearchBar.Input.Text)
+                for _, item in ipairs(Dropdown.List:GetChildren()) do
+                    if item:IsA('Frame') and item.Name ~= 'Template' and item ~= SearchBar and item.Name ~= 'PlaceHolder' then
+                        local shouldShow = inputText == "" or inputText == " " or string.find(string.upper(item.Name), inputText) ~= nil
+                        playTween(item, { BackgroundTransparency = shouldShow and 0 or 1 }, 0.15)
+                        playTween(item.UIStroke, { Transparency = shouldShow and 0 or 1 }, 0.15)
+                        playTween(item.Title, { TextTransparency = shouldShow and 0 or 1 }, 0.15)
+                    end
+                end
+            end)
 
-				if IsSelected then
-					DropdownOption.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-				end
+            -- Mouse Enter and Leave Effects
+            Dropdown.MouseEnter:Connect(function()
+                if not Dropdown.List.Visible then
+                    playTween(Dropdown, { BackgroundColor3 = SelectedTheme.ElementBackgroundHover }, 0.6)
+                end
+            end)
 
-				if Dropdown.Visible then
-					DropdownOption.BackgroundTransparency = 0
-					DropdownOption.UIStroke.Transparency = 0
-					DropdownOption.Title.TextTransparency = 0
-				else
-					DropdownOption.BackgroundTransparency = 1
-					DropdownOption.UIStroke.Transparency = 1
-					DropdownOption.Title.TextTransparency = 1
-				end
+            Dropdown.MouseLeave:Connect(function()
+                playTween(Dropdown, { BackgroundColor3 = SelectedTheme.ElementBackground }, 0.6)
+            end)
 
-				DropdownOption.Interact.ZIndex = 50
-				DropdownOption.Interact.MouseButton1Click:Connect(function()
-					if DropdownSettings.Locked then return end
-					if DropdownOption.BackgroundColor3 == Color3.fromRGB(30, 30, 30) then OptionInTable.Selected = false else OptionInTable.Selected = true end
-					if OptionInTable.Selected then
-						OptionInTable.Selected = false
-						table.remove(DropdownSettings.Items.Selected,table.find(DropdownSettings.Items.Selected,OptionInTable))
-						local Success, Response = pcall(function()
-							DropdownSettings.Callback(Option, DropdownSettings.Items.Selected)
-						end)
-						if not Success then
-							Error('Callback Error')
-							print("Rayfield | "..DropdownSettings.Name.." Callback Error " ..tostring(Response))
-						end
-						RefreshSelected()
-						TweenService:Create(DropdownOption, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundColor3 = Color3.fromRGB(30, 30, 30)}):Play()
-						SaveConfiguration()
-						return
-					end
-					if not Multi and DropdownSettings.Items.Selected[1] then
-						DropdownSettings.Items.Selected[1].Selected = false
-						if typeof(DropdownSettings.Items.Selected[1]["Option"]) == "Instance" then
-							TweenService:Create(DropdownSettings.Items.Selected[1].Option, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundColor3 = Color3.fromRGB(30, 30, 30)}):Play()
-						end
-					end
-					if not (Multi) then
-						DropdownSettings.Items.Selected = {OptionInTable}
-						Dropdown.Selected.Text = Option.Name or Option
-					else
-						table.insert(DropdownSettings.Items.Selected,OptionInTable)
-						RefreshSelected()
-					end
+            -- Error Display
+            local function Error(text)
+                playTween(Dropdown, { BackgroundColor3 = Color3.fromRGB(85, 0, 0) }, 0.6)
+                playTween(Dropdown.UIStroke, { Transparency = 1 }, 0.6)
+                Dropdown.Title.Text = text
+                wait(0.5)
+                Dropdown.Title.Text = DropdownSettings.Name
+                playTween(Dropdown, { BackgroundColor3 = SelectedTheme.ElementBackground }, 0.6)
+                playTween(Dropdown.UIStroke, { Transparency = 0 }, 0.6)
+            end
 
-					local Success, Response = pcall(function()
-						DropdownSettings.Callback(Option, DropdownSettings.Items.Selected)
-					end)
-					if not Success then
-						Error('Callback Error')
-						print("Rayfield | "..DropdownSettings.Name.." Callback Error " ..tostring(Response))
-					end
+            -- Add Option
+            local function AddOption(Option, Selecteds)
+                local DropdownOption = Elements.Template.Dropdown.List.Template:Clone()
+                DropdownOption:GetPropertyChangedSignal('BackgroundTransparency'):Connect(function()
+                    DropdownOption.Visible = DropdownOption.BackgroundTransparency ~= 1
+                end)
 
-					OptionInTable.Selected = true
+                DropdownSettings.Items[Option] = {
+                    Option = DropdownOption,
+                    Name = Option.Name or Option,
+                    Selected = false
+                }
+                local OptionInTable = DropdownSettings.Items[Option]
 
-					if not (Multi) then
-						for _,op in ipairs(DropdownSettings.Items.Selected) do
-							if typeof(op) == "Instance" then
-								TweenService:Create(op.Option, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundColor3 = Color3.fromRGB(30, 30, 30)}):Play()
-							end
-						end
-					end
-					TweenService:Create(DropdownOption.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {Transparency = 1}):Play()
-					TweenService:Create(DropdownOption, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundColor3 = Color3.fromRGB(40, 40, 40)}):Play()
-					Debounce = true
-					wait(0.2)
-					TweenService:Create(DropdownOption.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {Transparency = 0}):Play()
-					wait(0.1)
-					if not Multi then
-						TweenService:Create(Dropdown, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {Size = UDim2.new(0,465, 0, 45)}):Play()
-						for _, DropdownOpt in ipairs(Dropdown.List:GetChildren()) do
-							if DropdownOpt.ClassName == "Frame" and DropdownOpt.Name ~= "PlaceHolder" and DropdownOpt ~= SearchBar then
-								TweenService:Create(DropdownOpt, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundTransparency = 1}):Play()
-								TweenService:Create(DropdownOpt.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {Transparency = 1}):Play()
-								TweenService:Create(DropdownOpt.Title, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {TextTransparency = 1}):Play()
-							end
-						end
-						TweenService:Create(Dropdown.List, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {ScrollBarImageTransparency = 1}):Play()
-						TweenService:Create(Dropdown.Toggle, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {Rotation = 180}):Play()	
-						wait(0.35)
-						Dropdown.List.Visible = false
-					end
-					Debounce = false
-					SaveConfiguration()
-				end)
-			end
-			local function AddOptions(Options,Selected)
-				if typeof(Options) == 'table' then
-					for _, Option in ipairs(Options) do
-						AddOption(Option,Selected)
-					end
-				else
-					AddOption(Options,Selected)
-				end
-				if Settings.ConfigurationSaving then
-					if Settings.ConfigurationSaving.Enabled and DropdownSettings.Flag then
-						RayfieldLibrary.Flags[DropdownSettings.Flag] = DropdownSettings
-					end
-				end
-			end
-			function DropdownSettings:Add(Items,Selected)
-				AddOptions(Items,Selected)
-			end
+                DropdownOption.Name = Option.Name or Option
+                DropdownOption.Title.Text = Option.Name or Option
+                DropdownOption.Parent = Dropdown.List
+                DropdownOption.Visible = true
+                local IsSelected = OptionInTable.Selected
 
-			AddOptions(DropdownSettings.Options,DropdownSettings.CurrentOption)
+                if typeof(Selecteds) == 'string' then
+                    Selecteds = {Selecteds}
+                end
 
-			--fix
-			function DropdownSettings:Set(NewOption)
-				local OldNewOption = NewOption
-				if NewOption then
-					DropdownSettings.Items.Selected = {}
-				end
-				if typeof(NewOption) == 'table' then
-				else
-					NewOption = {NewOption}
-				end
-				for _,o in pairs(NewOption) do
-					local Items = {
-						Option = GetOptionInstance(o) or o,
-						Name = o.Name or o,
-						Selected = true
-					}
-					table.insert(DropdownSettings.Items.Selected,Items)
-					local Success, Response = pcall(function()
-						DropdownSettings.Callback(OldNewOption, DropdownSettings.Items.Selected)
-					end)
-					if not Success then
-						TweenService:Create(Dropdown, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {BackgroundColor3 = Color3.fromRGB(85, 0, 0)}):Play()
-						TweenService:Create(Dropdown.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {Transparency = 1}):Play()
-						Dropdown.Title.Text = "Callback Error"
-						print("Rayfield | "..DropdownSettings.Name.." Callback Error " ..tostring(Response))
-						wait(0.5)
-						Dropdown.Title.Text = DropdownSettings.Name
-						TweenService:Create(Dropdown, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
-						TweenService:Create(Dropdown.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {Transparency = 0}):Play()
-					end
-					if DropdownSettings.Items[NewOption] then
-						local DropdownOption =  DropdownSettings.Items[NewOption]
-						DropdownOption.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+                if Selecteds and #Selecteds > 0 then
+                    for _, Selected in pairs(Selecteds) do
+                        if Selected == Option then
+                            IsSelected = true
+                            OptionInTable.Selected = true
+                            table.insert(DropdownSettings.Items.Selected, OptionInTable)
+                        end
+                    end
+                    RefreshSelected()
+                end
 
-						if Dropdown.Visible then
-							DropdownOption.BackgroundTransparency = 0
-							DropdownOption.UIStroke.Transparency = 0
-							DropdownOption.Title.TextTransparency = 0
-						else
-							DropdownOption.BackgroundTransparency = 1
-							DropdownOption.UIStroke.Transparency = 1
-							DropdownOption.Title.TextTransparency = 1
-						end
+                DropdownOption.BackgroundColor3 = IsSelected and Color3.fromRGB(40, 40, 40) or DropdownOption.BackgroundColor3
+                DropdownOption.BackgroundTransparency = Dropdown.Visible and 0 or 1
+                DropdownOption.UIStroke.Transparency = Dropdown.Visible and 0 or 1
+                DropdownOption.Title.TextTransparency = Dropdown.Visible and 0 or 1
 
-					end
-				end
-				RefreshSelected(true)
-				--Dropdown.Selected.Text = NewText
-			end
-			function DropdownSettings:Error(text)
-				Error(text)
-			end
-			function DropdownSettings:Refresh(NewOptions,Selecteds)
-				DropdownSettings.Items = {}
-				DropdownSettings.Items.Selected = {}
-				local Success, Response = pcall(function()
-					DropdownSettings.Callback(NewOptions, DropdownSettings.Items.Selected)
-				end)
-				if not Success then
-					Error('Callback Error')
-					print("Rayfield | "..DropdownSettings.Name.." Callback Error " ..tostring(Response))
-				end
-				for _, option in ipairs(Dropdown.List:GetChildren()) do
-					if option.ClassName == "Frame" and option ~= SearchBar and option.Name ~= "Placeholder" then
-						option:Destroy()
-					end
-				end
-				AddOptions(NewOptions,Selecteds)
-			end
-			function DropdownSettings:Remove(Item)
-				if Item.Name ~= "Placeholder" and Item ~= SearchBar then
-					if DropdownSettings.Items[Item] then
-						DropdownSettings.Items[Item].Option:Destroy()
-						table.remove(DropdownSettings.Items,table.find(DropdownSettings.Items,Item))
-					else
-						Error('Option not found.')
-					end
-				else
-					SearchBar:Destroy()
-					Error("why you trynna remove the searchbar? FINE")
-				end
-				if Dropdown.Selected.Text == Item then
-					Dropdown.Selected.Text = ''
-				end
-			end
+                DropdownOption.Interact.ZIndex = 50
+                DropdownOption.Interact.MouseButton1Click:Connect(function()
+                    if DropdownSettings.Locked then return end
+                    local wasSelected = OptionInTable.Selected
 
-			function DropdownSettings:Destroy()
-				Dropdown:Destroy()
-			end
-			function DropdownSettings:Lock(Reason)
-				if DropdownSettings.Locked then return end
-				DropdownSettings.Locked = true
-				Debounce = true
-				TweenService:Create(Dropdown, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {Size = UDim2.new(0,465, 0, 44)}):Play()
-				for _, DropdownOpt in ipairs(Dropdown.List:GetChildren()) do
-					if DropdownOpt.ClassName == "Frame" and DropdownOpt.Name ~= 'PlaceHolder' and DropdownOpt.Name ~= "-SearchBar" then
-						TweenService:Create(DropdownOpt, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundTransparency = 1}):Play()
-						TweenService:Create(DropdownOpt.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {Transparency = 1}):Play()
-						TweenService:Create(DropdownOpt.Title, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {TextTransparency = 1}):Play()
-					end
-				end
-				TweenService:Create(Dropdown.List, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {ScrollBarImageTransparency = 1}):Play()
-				TweenService:Create(Dropdown.Toggle, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {Rotation = 180}):Play()	
-				wait(0.35)
-				Dropdown.List.Visible = false
-				Debounce = false
-				Dropdown.Lock.Reason.Text = Reason or 'Locked'
-				TweenService:Create(Dropdown.Lock,TweenInfo.new(0.4,Enum.EasingStyle.Quint,Enum.EasingDirection.Out),{BackgroundTransparency = 0}):Play()
-				TweenService:Create(Dropdown.Lock.Reason,TweenInfo.new(0.4,Enum.EasingStyle.Quint,Enum.EasingDirection.Out),{TextTransparency = 0}):Play()
-				wait(0.2)
-				if not DropdownSettings.Locked then return end --no icon bug
-				TweenService:Create(Dropdown.Lock.Reason.Icon,TweenInfo.new(0.4,Enum.EasingStyle.Quint,Enum.EasingDirection.Out),{ImageTransparency = 0}):Play()
-			end
-			function DropdownSettings:Unlock()
-				if not DropdownSettings.Locked then return end
-				DropdownSettings.Locked = false
-				wait(0.2)
-				TweenService:Create(Dropdown.Lock.Reason.Icon,TweenInfo.new(0.4,Enum.EasingStyle.Quint,Enum.EasingDirection.Out),{ImageTransparency = 1}):Play()
-				if DropdownSettings.Locked then return end --no icon bug
-				TweenService:Create(Dropdown.Lock,TweenInfo.new(0.4,Enum.EasingStyle.Quint,Enum.EasingDirection.Out),{BackgroundTransparency = 1}):Play()
-				TweenService:Create(Dropdown.Lock.Reason,TweenInfo.new(0.4,Enum.EasingStyle.Quint,Enum.EasingDirection.Out),{TextTransparency = 1}):Play()
-			end
-			function DropdownSettings:Visible(bool)
-				Dropdown.Visible = bool
-			end
-			return DropdownSettings
-		end
+                    -- Toggle selection state
+                    if Multi then
+                        OptionInTable.Selected = not wasSelected
+                        if OptionInTable.Selected then
+                            table.insert(DropdownSettings.Items.Selected, OptionInTable)
+                        else
+                            for index, selectedItem in ipairs(DropdownSettings.Items.Selected) do
+                                if selectedItem == OptionInTable then
+                                    table.remove(DropdownSettings.Items.Selected, index)
+                                    break
+                                end
+                            end
+                        end
+                    else
+                        if not wasSelected then
+                            for _, item in ipairs(DropdownSettings.Items.Selected) do
+                                item.Selected = false
+                            end
+                            DropdownSettings.Items.Selected = { OptionInTable }
+                            OptionInTable.Selected = true
+                        end
+                    end
+
+                    -- Update the visual state
+                    RefreshSelected(true)
+
+                    -- Trigger callback if provided
+                    if DropdownSettings.Callback then
+                        DropdownSettings.Callback(OptionInTable.Name, OptionInTable.Selected)
+                    end
+                end)
+
+                DropdownOption.MouseEnter:Connect(function()
+                    playTween(DropdownOption, { BackgroundColor3 = SelectedTheme.ElementBackgroundHover }, 0.3)
+                end)
+
+                DropdownOption.MouseLeave:Connect(function()
+                    local bgColor = OptionInTable.Selected and Color3.fromRGB(40, 40, 40) or SelectedTheme.ElementBackground
+                    playTween(DropdownOption, { BackgroundColor3 = bgColor }, 0.3)
+                end)
+            end
+
+            -- Add options to the dropdown
+            if DropdownSettings.Items then
+                for _, option in pairs(DropdownSettings.Items) do
+                    AddOption(option, DropdownSettings.Selected)
+                end
+            end
+
+            -- Function to lock the dropdown
+            function DropdownSettings:SetLocked(state)
+                DropdownSettings.Locked = state
+                if state then
+                    playTween(Dropdown, { BackgroundColor3 = Color3.fromRGB(50, 50, 50) }, 0.3)
+                else
+                    playTween(Dropdown, { BackgroundColor3 = SelectedTheme.ElementBackground }, 0.3)
+                end
+            end
+
+            -- Function to refresh options list
+            function DropdownSettings:RefreshOptions(options, selected)
+                Dropdown.List:ClearAllChildren()
+                SearchBar.Parent = Dropdown.List  -- Keep SearchBar in the list
+                DropdownSettings.Items = { Selected = {} }
+                for _, option in pairs(options) do
+                    AddOption(option, selected)
+                end
+                RefreshSelected()
+            end
+
+            -- Add the search bar to the dropdown list
+            SearchBar.Parent = Dropdown.List
+            SearchBar.Visible = true
+
+            -- Initial refresh of selected items
+            RefreshSelected()
+
+            return DropdownSettings
+        end
 
 		-- Keybind
 		function Tab:CreateKeybind(KeybindSettings)
