@@ -85,8 +85,7 @@ local ArrayFieldLibrary = {
 			InputBackground = Color3.fromRGB(31, 159, 71),
 			InputStroke = Color3.fromRGB(19, 65, 31),
 			PlaceholderColor = Color3.fromRGB(178, 178, 178)
-		},
-
+		},		
 	}
 }
 
@@ -1190,7 +1189,7 @@ function ArrayFieldLibrary:CreateWindow(Settings)
 	ArrayField.Enabled = false
 	local Passthrough = false
 	Topbar.Title.Text = Settings.Name
-	Main.Size = UDim2.new(0, 450, 0, 130)
+	Main.Size = UDim2.new(0, 450, 0, 260)
 	Main.Visible = true
 	Main.BackgroundTransparency = 1
 	LoadingFrame.Title.TextTransparency = 1
@@ -1200,7 +1199,7 @@ function ArrayFieldLibrary:CreateWindow(Settings)
 	LoadingFrame.Title.Text = Settings.LoadingTitle or "Arrayfield Interface Suite"
 	LoadingFrame.Subtitle.Text = Settings.LoadingSubtitle or "by Sirius | Meta"
 	if Settings.LoadingTitle ~= "Arrayfield Interface Suite" then
-		LoadingFrame.Version.Text = "Arrayfield UI"
+		LoadingFrame.Version.Text "Loading Script..."
 	end
 	Topbar.Visible = false
 	Elements.Visible = false
@@ -3478,11 +3477,11 @@ FieldScreen.Parent = gethui and gethui() or game:GetService("CoreGui")
 
 local UniButton = Instance.new("ImageLabel")
 UniButton.Name = "UniButton"
-UniButton.Image = "rbxassetid://14958620447"
+UniButton.Image = "rbxassetid://16730867128"
 UniButton.Active = false
 --UniButton.AnchorPoint = Vector2.new(0.5,0.5)
 UniButton.ZIndex = 10
-UniButton.Position = UDim2.new(0.8,0,0,0)
+UniButton.Position = UDim2.new(0,0,0,0)
 UniButton.BorderSizePixel = 0
 UniButton.BackgroundTransparency = 1
 UniButton.Size = UDim2.new(0, 42, 0, 42)
