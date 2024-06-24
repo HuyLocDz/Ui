@@ -1682,7 +1682,7 @@ function ArrayFieldLibrary:CreateWindow(Settings)
 		SideTabButton.Interact.MouseButton1Click:Connect(Pick)
 
 		-- Button
-		function Tab:CreateButton(ButtonSettings)
+		function Tab:AddButton(ButtonSettings)
 			local ButtonValue = {Locked = false}
 
 			local Button = Elements.Template.Button:Clone()
@@ -1782,7 +1782,7 @@ function ArrayFieldLibrary:CreateWindow(Settings)
 		end
 
 		-- Section
-		function Tab:CreateSection(SectionName,Display)
+		function Tab:AddSection(SectionName,Display)
 
 			local SectionValue = {
 				Holder = ArrayField.Holding,
@@ -1897,7 +1897,7 @@ function ArrayFieldLibrary:CreateWindow(Settings)
 		end
 
 		-- Spacing
-		function Tab:CreateSpacing(SectionParent,Size)
+		function Tab:AddSpacing(SectionParent,Size)
 			local Spacing = Elements.Template.SectionSpacing:Clone()
 			Spacing.Visible = true
 			Spacing.Parent = TabPage
@@ -1912,7 +1912,7 @@ function ArrayFieldLibrary:CreateWindow(Settings)
 		end
 
 		-- Label
-		function Tab:CreateLabel(LabelText,SectionParent)
+		function Tab:AddLabel(LabelText,SectionParent)
 			local LabelValue = {}
 
 			local Label = Elements.Template.Label:Clone()
@@ -1948,7 +1948,7 @@ function ArrayFieldLibrary:CreateWindow(Settings)
 		end
 
 		-- Paragraph
-		function Tab:CreateParagraph(ParagraphSettings)
+		function Tab:AddParagraph(ParagraphSettings)
 			local ParagraphValue = {}
 
 			local Paragraph = Elements.Template.Paragraph:Clone()
@@ -1989,7 +1989,7 @@ function ArrayFieldLibrary:CreateWindow(Settings)
 		end
 
 		-- Input
-		function Tab:CreateInput(InputSettings)
+		function Tab:AddInput(InputSettings)
 			local Input = Elements.Template.Input:Clone()
 			Input.Name = InputSettings.Name
 			Input.Title.Text = InputSettings.Name
@@ -2094,7 +2094,7 @@ function ArrayFieldLibrary:CreateWindow(Settings)
 		end
 
 		-- Dropdown
-		function Tab:CreateDropdown(DropdownSettings)
+		function Tab:AddDropdown(DropdownSettings)
 			local Dropdown = Elements.Template.Dropdown:Clone()
 			local SearchBar = Dropdown.List["-SearchBar"]
 			local Required = 1
@@ -2518,7 +2518,7 @@ function ArrayFieldLibrary:CreateWindow(Settings)
 		end
 
 		-- Keybind
-		function Tab:CreateKeybind(KeybindSettings)
+		function Tab:AddKeybind(KeybindSettings)
 			local CheckingForKey = false
 			local Keybind = Elements.Template.Keybind:Clone()
 			Keybind.Name = KeybindSettings.Name
@@ -2665,7 +2665,7 @@ function ArrayFieldLibrary:CreateWindow(Settings)
 		end
 
 		-- Toggle
-		function Tab:CreateToggle(ToggleSettings)
+		function Tab:AddToggle(ToggleSettings)
 
 			local Toggle = Elements.Template.Toggle:Clone()
 			Toggle.Name = ToggleSettings.Name
@@ -2843,7 +2843,7 @@ function ArrayFieldLibrary:CreateWindow(Settings)
 		end
 
 		-- ColorPicker
-		function Tab:CreateColorPicker(ColorPickerSettings) -- by Throit
+		function Tab:AddColorPicker(ColorPickerSettings) -- by Throit
 			local ColorPicker = Elements.Template.ColorPicker:Clone()
 			Tab.Elements[ColorPickerSettings.Name] = {
 				type = 'colorpicker',
@@ -3130,7 +3130,8 @@ function ArrayFieldLibrary:CreateWindow(Settings)
 			return ColorPickerSettings
 		end
 
-		function Tab:CreateSlider(SliderSettings)
+        --Slider
+		function Tab:AddSlider(SliderSettings)
 			local Dragging = false
 			local Slider = Elements.Template.Slider:Clone()
 			Slider.Name = SliderSettings.Name
