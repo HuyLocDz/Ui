@@ -1043,6 +1043,7 @@ function Minimise()
 end
 
 function RayfieldLibrary:CreateWindow(Settings)
+	Rayfield.Enabled = false
 	local Passthrough = false
 	Topbar.Title.Text = Settings.Name
 	Main.Size = UDim2.new(0, 450, 0, 260)
@@ -1053,19 +1054,20 @@ function RayfieldLibrary:CreateWindow(Settings)
 	Main.Shadow.Image.ImageTransparency = 1
 	LoadingFrame.Version.TextTransparency = 1
 	LoadingFrame.Title.Text = Settings.LoadingTitle or "Rayfield Interface Suite"
-	LoadingFrame.Subtitle.Text = Settings.LoadingSubtitle or "by Sirius"
+	LoadingFrame.Subtitle.Text = Settings.LoadingSubtitle or "by Sirius | Meta"
 	if Settings.LoadingTitle ~= "Rayfield Interface Suite" then
-		LoadingFrame.Version.Text = "Tinh Linh Hub Script"
+		LoadingFrame.Version.Text = "Rayfield UI"
 	end
 	Topbar.Visible = false
 	Elements.Visible = false
 	LoadingFrame.Visible = true
 
+
 	pcall(function()
 		if not Settings.ConfigurationSaving.FileName then
 			Settings.ConfigurationSaving.FileName = tostring(game.PlaceId)
 		end
-		if not isfolder(RayfieldFolder.."/".."Configuration Folders") then
+		if not isfolder(RayfieldLibrary.."/".."Configuration Folders") then
 
 		end
 		if Settings.ConfigurationSaving.Enabled == nil then
@@ -1084,7 +1086,9 @@ function RayfieldLibrary:CreateWindow(Settings)
 
 	AddDraggingFunctionality(Topbar,Main)
 
-	for _, TabButton in ipairs(TabList:GetChildren()) do
+	if Settings.KeySystem and typeof(Settings.KeySettings.Key) == "string" then Settings.KeySettings.Key = {Settings.KeySettings.Key} end
+
+	for _, TabButton in ipairs(TabsList:GetChildren()) do
 		if TabButton.ClassName == "Frame" and TabButton.Name ~= "Placeholder" then
 			TabButton.BackgroundTransparency = 1
 			TabButton.Title.TextTransparency = 1
