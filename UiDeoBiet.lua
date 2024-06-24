@@ -533,7 +533,7 @@ function RayfieldLibrary:Notify(NotificationSettings)
 		Notification.Icon.ImageTransparency = 1
 
 		Notification.Parent = Notifications
-		Notification.Size = UDim2.new(0, 260, 0, 80)
+		Notification.Size = UDim2.new(0, 260, 0, 50)
 		Notification.BackgroundTransparency = 1
 
 		TweenService:Create(Notification, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {Size = UDim2.new(0, 295, 0, 91)}):Play()
@@ -849,7 +849,7 @@ end
 function RayfieldLibrary:CreateWindow(Settings)
 	local Passthrough = false
 	Topbar.Title.Text = Settings.Name
-	Main.Size = UDim2.new(0, 450, 0, 130)
+	Main.Size = UDim2.new(0, 450, 0, 260)
 	Main.Visible = true
 	Main.BackgroundTransparency = 1
 	LoadingFrame.Title.TextTransparency = 1
