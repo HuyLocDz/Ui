@@ -626,28 +626,35 @@ function RayfieldLibrary:Notify(NotificationSettings)
 end
 
 function CloseSideBar()
-	Debounce = true
-	SideBarClosed = true
-	
-	if SideList then
-		for _, tabbtn in pairs(SideList:GetChildren()) do
-			if tabbtn.ClassName == "Frame" and tabbtn.Name ~= "Placeholder" then
-				TweenService:Create(tabbtn.Title, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {TextTransparency = 1}):Play()
-				TweenService:Create(tabbtn.Image, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {ImageTransparency = 1}):Play()
-			end
-		end
-	else
-		warn("SideList is nil")
-	end
+    Debounce = true
+    SideBarClosed = true
 
-	TweenService:Create(Main.SideTabList, TweenInfo.new(0.4, Enum.EasingStyle.Quint), {BackgroundTransparency = 1, Size = UDim2.new(0, 150, 0, 390), Position = UDim2.new(0, 10, 0.5, 22)}):Play()
-	TweenService:Create(Main.SideTabList.UIStroke, TweenInfo.new(0.4, Enum.EasingStyle.Quint), {Transparency = 1}):Play()
-	TweenService:Create(Main.SideTabList.RDMT, TweenInfo.new(0.4, Enum.EasingStyle.Quint), {TextTransparency = 1}):Play()
+    if SideList then
+        for _, tabbtn in pairs(SideList:GetChildren()) do
+            if tabbtn.ClassName == "Frame" and tabbtn.Name ~= "Placeholder" then
+                TweenService:Create(tabbtn.Title, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {TextTransparency = 1}):Play()
+                TweenService:Create(tabbtn.Image, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {ImageTransparency = 1}):Play()
+            end
+        end
+    else
+        warn("SideList is nil")
+    end
 
-	wait(0.4)
-	Main.SideTabList.Visible = false
-	wait(0.2)
-	Debounce = false
+    if Main and Main:FindFirstChild("SideTabList") then
+        local sideTabList = Main:FindFirstChild("SideTabList")
+        
+        TweenService:Create(sideTabList, TweenInfo.new(0.4, Enum.EasingStyle.Quint), {BackgroundTransparency = 1, Size = UDim2.new(0, 150, 0, 390), Position = UDim2.new(0, 10, 0.5, 22)}):Play()
+        TweenService:Create(sideTabList.UIStroke, TweenInfo.new(0.4, Enum.EasingStyle.Quint), {Transparency = 1}):Play()
+        TweenService:Create(sideTabList.RDMT, TweenInfo.new(0.4, Enum.EasingStyle.Quint), {TextTransparency = 1}):Play()
+
+        wait(0.4)
+        sideTabList.Visible = false
+        wait(0.2)
+    else
+        warn("SideTabList is not a valid member of Main")
+    end
+
+    Debounce = false
 end
 
 local hasHidden = false
@@ -833,7 +840,6 @@ function Maximise()
 		end
 	end
 
-
 	wait(0.1)
 
 	for _, tabbtn in ipairs(TopList:GetChildren()) do
@@ -854,8 +860,6 @@ function Maximise()
 
 		end
 	end
-
-
 	wait(0.5)
 	Debounce = false
 end
@@ -883,64 +887,83 @@ function OpenSideBar()
 end
 
 function Minimise()
-	Debounce = true
-	Topbar.ChangeSize.Image = "rbxassetid://"..11036884234
-	
-	if not SearchHided then
-		spawn(CloseSearch)
-	end
-	if not SideBarClosed then
-		spawn(CloseSideBar)
-	end
-	if TopList then
-		for _, tabbtn in ipairs(TopList:GetChildren()) do
-			if tabbtn.ClassName == "Frame" and tabbtn.Name ~= "Placeholder" then
-				TweenService:Create(tabbtn, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundTransparency = 1}):Play()
-				TweenService:Create(tabbtn.Image, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {ImageTransparency = 1}):Play()
-				TweenService:Create(tabbtn.Title, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {TextTransparency = 1}):Play()
-				TweenService:Create(tabbtn.Shadow, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {ImageTransparency = 1}):Play()
-				TweenService:Create(tabbtn.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {Transparency = 1}):Play()
-			end
-		end
-	end
-	if Elements then
-		for _, tab in ipairs(Elements:GetChildren()) do
-			if tab.Name ~= "Template" and tab.ClassName == "ScrollingFrame" and tab.Name ~= "Placeholder" then
-				for _, element in ipairs(tab:GetChildren()) do
-					if element.ClassName == "Frame" then
-						if element.Name ~= "SectionSpacing" and element.Name ~= "Placeholder" then
-							if element:FindFirstChild('_UIPadding_') then
-								TweenService:Create(element, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundTransparency = 1}):Play()
-								TweenService:Create(element.Title, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {TextTransparency = 1}):Play()
-							else
-								TweenService:Create(element, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundTransparency = 1}):Play()
-								pcall(function()
-									TweenService:Create(element.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {Transparency = 1}):Play()
-								end)
-								TweenService:Create(element.Title, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {TextTransparency = 1}):Play()
-							end
-							for _, child in ipairs(element:GetChildren()) do
-								if child.ClassName == "Frame" or child.ClassName == "TextLabel" or child.ClassName == "TextBox" or child.ClassName == "ImageButton" or child.ClassName == "ImageLabel" then
-									child.Visible = false
-								end
-							end
-						end
-					end
-				end
-			end
-		end
-	end
-	TweenService:Create(Topbar.UIStroke, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {Transparency = 0}):Play()
-	TweenService:Create(Main.Shadow.Image, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {ImageTransparency = 1}):Play()
-	TweenService:Create(Topbar.CornerRepair, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {BackgroundTransparency = 1}):Play()
-	TweenService:Create(Topbar.Divider, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {BackgroundTransparency = 1}):Play()
-	TweenService:Create(Main, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {Size = UDim2.new(0, 495, 0, 45)}):Play()
-	TweenService:Create(Topbar, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {Size = UDim2.new(0, 495, 0, 45)}):Play()
-	wait(0.3)
-	Elements.Visible = false
-	TabsList.Visible = false
-	wait(0.2)
-	Debounce = false
+    Debounce = true
+    Topbar.ChangeSize.Image = "rbxassetid://"..11036884234
+    if not SearchHided then
+        spawn(CloseSearch)
+    end
+    if not SideBarClosed then
+        spawn(CloseSideBar)
+    end
+    if TopList then
+        for _, tabbtn in ipairs(TopList:GetChildren()) do
+            if tabbtn.ClassName == "Frame" and tabbtn.Name ~= "Placeholder" then
+                TweenService:Create(tabbtn, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundTransparency = 1}):Play()
+                TweenService:Create(tabbtn.Image, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {ImageTransparency = 1}):Play()
+                TweenService:Create(tabbtn.Title, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {TextTransparency = 1}):Play()
+                TweenService:Create(tabbtn.Shadow, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {ImageTransparency = 1}):Play()
+                TweenService:Create(tabbtn.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {Transparency = 1}):Play()
+            end
+        end
+    end
+    if Elements then
+        for _, tab in ipairs(Elements:GetChildren()) do
+            if tab.Name ~= "Template" and tab.ClassName == "ScrollingFrame" and tab.Name ~= "Placeholder" then
+                for _, element in ipairs(tab:GetChildren()) do
+                    if element.ClassName == "Frame" then
+                        if element.Name ~= "SectionSpacing" and element.Name ~= "Placeholder" then
+                            if element:FindFirstChild('_UIPadding_') then
+                                TweenService:Create(element, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundTransparency = 1}):Play()
+                                TweenService:Create(element.Title, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {TextTransparency = 1}):Play()
+                            else
+                                TweenService:Create(element, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundTransparency = 1}):Play()
+                                pcall(function()
+                                    TweenService:Create(element.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {Transparency = 1}):Play()
+                                end)
+                                TweenService:Create(element.Title, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {TextTransparency = 1}):Play()
+                            end
+                            for _, child in ipairs(element:GetChildren()) do
+                                if child.ClassName == "Frame" or child.ClassName == "TextLabel" or child.ClassName == "TextBox" or child.ClassName == "ImageButton" or child.ClassName == "ImageLabel" then
+                                    if child ~= nil then
+                                        child.Visible = false
+                                    else
+                                        print("Warning: Child is nil")
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+    if Topbar.UIStroke then
+        TweenService:Create(Topbar.UIStroke, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {Transparency = 0}):Play()
+    end
+    if Main.Shadow.Image then
+        TweenService:Create(Main.Shadow.Image, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {ImageTransparency = 1}):Play()
+    end
+    if Topbar.CornerRepair then
+        TweenService:Create(Topbar.CornerRepair, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {BackgroundTransparency = 1}):Play()
+    end
+    if Topbar.Divider then
+        TweenService:Create(Topbar.Divider, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {BackgroundTransparency = 1}):Play()
+    end
+    if Main then
+        TweenService:Create(Main, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {Size = UDim2.new(0, 495, 0, 45)}):Play()
+    end
+    if Topbar then
+        TweenService:Create(Topbar, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {Size = UDim2.new(0, 495, 0, 45)}):Play()
+    end
+    wait(0.3)
+    if Elements then
+        Elements.Visible = false
+    end
+    if TabsList then
+        TabsList.Visible = false
+    end
+    wait(0.2)
+    Debounce = false
 end
 
 function RayfieldLibrary:CreateWindow(Settings)
