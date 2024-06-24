@@ -2702,7 +2702,7 @@ Topbar.ChangeSize.MouseButton1Click:Connect(function()
 		Minimise()
 	end
 end)
---[[
+
 Topbar.Type.MouseButton1Click:Connect(function()
 	if Debounce or Minimised then return end
 	if SideBarClosed then
@@ -2713,7 +2713,7 @@ Topbar.Type.MouseButton1Click:Connect(function()
 		CloseSideBar()
 	end
 end)
---]]
+
 Topbar.Hide.MouseButton1Click:Connect(function()
 	if Debounce then return end
 	if Hidden then
