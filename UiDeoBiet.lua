@@ -1805,8 +1805,8 @@ function RayfieldLibrary:CreateWindow(Settings)
 				end
 			end)
 
-			Dropdown.List:FindFirstChild("-SearchBar").Input:GetPropertyChangedSignal('Text'):Connect(function()
-				local InputText=string.upper(Dropdown.List:FindFirstChild("-SearchBar").Input.Text)
+			Dropdown.List:FindFirstChild('-SearchBar').Input:GetPropertyChangedSignal('Text'):Connect(function()
+				local InputText=string.upper(Dropdown.List:FindFirstChild('-SearchBar').Input.Text)
 				for _,item in ipairs(Dropdown.List:GetChildren()) do
 					if item:IsA('Frame') and item.Name ~= 'Template' and item ~= SearchBar and item.Name ~= 'PlaceHolder' then
 						if InputText=="" or InputText==" "or string.find(string.upper(item.Name),InputText)~=nil then
