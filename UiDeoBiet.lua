@@ -1948,12 +1948,12 @@ function ArrayFieldLibrary:CreateWindow(Settings)
 		end
 
 		-- Paragraph
-		function Tab:AddParagraph(ParagraphSettings)
+		function Tab:AddParagraph(Title, Content)
 			local ParagraphValue = {}
 
 			local Paragraph = Elements.Template.Paragraph:Clone()
-			Paragraph.Title.Text = ParagraphSettings.Title
-			Paragraph.Content.Text = ParagraphSettings.Content
+			Paragraph.Title.Text = Title or "Title"
+			Paragraph.Content.Text = Content or "Content"
 			Paragraph.Visible = true
 
 			Tab.Elements[ParagraphSettings.Title] = {
@@ -1980,9 +1980,8 @@ function ArrayFieldLibrary:CreateWindow(Settings)
 			TweenService:Create(Paragraph.Title, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {TextTransparency = 0}):Play()	
 			TweenService:Create(Paragraph.Content, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {TextTransparency = 0}):Play()	
 
-			function ParagraphValue:Set(NewParagraphSettings)
-				Paragraph.Title.Text = NewParagraphSettings.Title
-				Paragraph.Content.Text = NewParagraphSettings.Content
+			function ParagraphValue:Set(NewContent)
+				Paragraph.Content.Text = NewContent
 			end
 
 			return ParagraphValue
