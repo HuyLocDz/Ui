@@ -571,7 +571,7 @@ local neon = (function()  --Open sourced neon module
 end)()
 function CloseNPrompt()
 	local Infos= TweenInfo.new(.2,Enum.EasingStyle.Quad,Enum.EasingDirection.Out)
-	TweenService:Create(NotePrompt,Infos,{BackgroundTransparency = 1,Size = UDim2.fromOffset(436,92),Position = UDim2.fromScale(0.5,0.19)}):Play()
+	TweenService:Create(NotePrompt,Infos,{BackgroundTransparency = 1,Size = UDim2.fromOffset(436,80),Position = UDim2.fromScale(0.5,0.19)}):Play()
 	TweenService:Create(NotePrompt.UIStroke,Infos,{Transparency = 1}):Play()
 	TweenService:Create(NotePrompt.Shadow.Image,Infos,{ImageTransparency = 1}):Play()
 
@@ -590,7 +590,7 @@ function qNotePrompt(PromptSettings)
 	local Infos= TweenInfo.new(.4,Enum.EasingStyle.Quad,Enum.EasingDirection.Out)
 	NotePrompt.Visible = false
 	--Setup
-	NotePrompt.Size = UDim2.fromOffset(436,92)
+	NotePrompt.Size = UDim2.fromOffset(436,80)
 	NotePrompt.Position = UDim2.fromScale(0.5,0.19)
 	NotePrompt.BackgroundTransparency = 1
 	NotePrompt.UIStroke.Transparency = 1
@@ -2205,6 +2205,16 @@ function ArrayFieldLibrary:CreateWindow(Settings)
 						end
 					end
 				end
+			end)
+
+			Dropdown.MouseEnter:Connect(function()
+				if not Dropdown.List.Visible then
+					TweenService:Create(Dropdown, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
+				end
+			end)
+
+			Dropdown.MouseLeave:Connect(function()
+				TweenService:Create(Dropdown, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
 			end)
 
 			local function Error(text)
