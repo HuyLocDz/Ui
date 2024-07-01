@@ -571,7 +571,7 @@ local neon = (function()  --Open sourced neon module
 end)()
 function CloseNPrompt()
 	local Infos= TweenInfo.new(.2,Enum.EasingStyle.Quad,Enum.EasingDirection.Out)
-	TweenService:Create(NotePrompt,Infos,{BackgroundTransparency = 1,Size = UDim2.fromOffset(436,80),Position = UDim2.fromScale(0.5,0.19)}):Play()
+	TweenService:Create(NotePrompt,Infos,{BackgroundTransparency = 1,Size = UDim2.fromOffset(436,92),Position = UDim2.fromScale(0.5,0.19)}):Play()
 	TweenService:Create(NotePrompt.UIStroke,Infos,{Transparency = 1}):Play()
 	TweenService:Create(NotePrompt.Shadow.Image,Infos,{ImageTransparency = 1}):Play()
 
@@ -590,7 +590,7 @@ function qNotePrompt(PromptSettings)
 	local Infos= TweenInfo.new(.4,Enum.EasingStyle.Quad,Enum.EasingDirection.Out)
 	NotePrompt.Visible = false
 	--Setup
-	NotePrompt.Size = UDim2.fromOffset(436,80)
+	NotePrompt.Size = UDim2.fromOffset(436,92)
 	NotePrompt.Position = UDim2.fromScale(0.5,0.19)
 	NotePrompt.BackgroundTransparency = 1
 	NotePrompt.UIStroke.Transparency = 1
@@ -842,7 +842,7 @@ function Hide()
 		ArrayFieldLibrary:Notify({Title = "Interface Hidden", Content = "The Interface Has Been Hidden, You Can Unhide The Interface By Tapping Right-Shift", Duration = 5, Image = "16730867128"})
 		--delay(60, function() hasHidden = false end)
 	end
-	TweenService:Create(Main, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {Size = UDim2.new(0, 470, 0, 400)}):Play()
+	TweenService:Create(Main, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {Size = UDim2.new(0, 470, 0, 300)}):Play()
 	TweenService:Create(Main.Topbar, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {Size = UDim2.new(0, 470, 0, 45)}):Play()
 	TweenService:Create(Main, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {BackgroundTransparency = 1}):Play()
 	TweenService:Create(Main.Topbar, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {BackgroundTransparency = 1}):Play()
