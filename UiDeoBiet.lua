@@ -32,8 +32,8 @@ local ArrayFieldLibrary = {
 			SecondaryElementStroke = Color3.fromRGB(40, 40, 40), -- For labels and paragraphs
 
 			SliderBackground = Color3.fromRGB(255, 255, 255),
-			SliderProgress = Color3.fromRGB(43, 105, 159),
-			SliderStroke = Color3.fromRGB(48, 119, 177),
+			SliderProgress = Color3.fromRGB(255, 255, 255),
+			SliderStroke = Color3.fromRGB(255, 255, 255),
 
 			ToggleBackground = Color3.fromRGB(30, 30, 30),
 			ToggleEnabled = Color3.fromRGB(0, 146, 214),
