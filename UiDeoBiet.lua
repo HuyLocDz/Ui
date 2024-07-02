@@ -1902,7 +1902,7 @@ function ArrayFieldLibrary:CreateWindow(Settings)
 			Spacing.Visible = true
 			Spacing.Parent = TabPage
 
-			Spacing.Size = UDim2.fromOffset(475,Size or 6)
+			Spacing.Size = UDim2.fromOffset(300,Size or 5)
 
 			if SectionParent then
 				Spacing.Parent = SectionParent.Holder
@@ -2196,7 +2196,7 @@ function ArrayFieldLibrary:CreateWindow(Settings)
 					TweenService:Create(Dropdown, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {Size = UDim2.new(0,465, 0, 178)}):Play()
 					Dropdown.List.Visible = true
 					TweenService:Create(Dropdown.List, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {ScrollBarImageTransparency = 0.7}):Play()
-					TweenService:Create(Dropdown.Toggle, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {Rotation = 0}):Play()	
+					TweenService:Create(Dropdown.Toggle, TweenInfo.new(0.4, Enum.EasingStyle.Quint), {Rotation = 0}):Play()	
 					for _, DropdownOpt in ipairs(Dropdown.List:GetChildren()) do
 						if DropdownOpt.ClassName == "Frame" and DropdownOpt.Name ~= 'PlaceHolder' then
 							TweenService:Create(DropdownOpt, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundTransparency = 0}):Play()
@@ -3463,7 +3463,7 @@ UniButton.ZIndex = 10
 UniButton.Position = UDim2.new(0,0,0,0)
 UniButton.BorderSizePixel = 0
 UniButton.BackgroundTransparency = 1
-UniButton.Size = UDim2.new(0, 42, 0, 42)
+UniButton.Size = UDim2.new(0, 30, 0, 30)
 UniButton.SizeConstraint = Enum.SizeConstraint.RelativeXY
 UniButton.Parent = FieldScreen
 
@@ -3472,8 +3472,8 @@ UniBoxButton.Name = "UniBoxButton"
 --UniBoxButton.AnchorPoint = Vector2.new(0.5,0.5)
 UniBoxButton.ZIndex = 10
 UniBoxButton.AnchorPoint = Vector2.new(0.5, 0)
-UniBoxButton.Position = UDim2.new(0.5, 0, 0, 0)
-UniBoxButton.Size = UDim2.new(0, 42+21, 0, 42)
+UniBoxButton.Position = UDim2.new(0.3, 0, 0, 0)
+UniBoxButton.Size = UDim2.new(0, 30+21, 0, 30)
 UniBoxButton.BorderSizePixel = 0
 UniBoxButton.BackgroundTransparency = 1
 UniBoxButton.Text = ""
